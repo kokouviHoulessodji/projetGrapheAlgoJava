@@ -1,6 +1,5 @@
 package Graphe;
 
-import java.awt.EventQueue;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
@@ -104,16 +103,8 @@ public class Main {
 				run();
 				break;
 			case 2 :
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							Main window = new Main();
-							window.frame.setVisible(true);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
+				InterfacePrincipale frame = new InterfacePrincipale();
+				frame.setVisible(true);
 				break;
 			default : break;
 		}
