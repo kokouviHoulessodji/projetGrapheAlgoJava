@@ -67,7 +67,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	            {
 	                if (lg > lc[s])
 	                {
-	                    lc[s] = lg; // Nouvelle lg candidate a être critique
+	                    lc[s] = lg; // Nouvelle le candidate a être critique
 	                    kc = appc[s];
 	                    fpc[kc] = t;
 	                }

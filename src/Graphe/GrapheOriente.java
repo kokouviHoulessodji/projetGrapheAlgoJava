@@ -329,6 +329,22 @@ public class GrapheOriente extends Graphe{
 	        choix = menu();
 	    }
 	}
+	public void afficherMatriceConsole() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void afficherMatriceText() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void afficherFsApsDConsole() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void afficherFsApsText() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }
