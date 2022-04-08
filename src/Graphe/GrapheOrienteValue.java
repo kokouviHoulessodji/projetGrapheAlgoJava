@@ -7,7 +7,11 @@ public class GrapheOrienteValue extends GrapheOriente {
 	public GrapheOrienteValue() {
 		super();
 		saisir_cout();
-	    matriceToAretes();
+	    aretesToMatrice();
+	    matriceToFsAps();
+	}
+	public GrapheOrienteValue(int val) {
+		super(val);
 	}
 
 	public void saisir_cout() //TESTED
@@ -46,41 +50,42 @@ public class GrapheOrienteValue extends GrapheOriente {
 	}
 	public void ordonnancement(int []d, int []fpc, int []appc, int []lc)
 	{
-	    fs_aps_2_fp_app();
+	    
+        
 	    int n = app[0], m = fp[0];
-	    fpc = new int[m+1];
-	    appc = new int[n+1]; appc[0] = n; lc = new int[n+1]; lc[0] = n;
+	    fpc[0] = m;
+	    appc[0] = n; lc[0] = n;
 	    int kc, t, lg;
 	    lc[1] = 0;
-	    fpc[1] = 0; // fin de la liste
+	    fpc[1] = 0; // fin de la liste 
 	    appc[1] = 1;
-	    kc = 1; // indice de la dernière place remplie dans fpc
+	    kc = 1; // indice de la dernière place remplie dans fpc 
 	    for(int s = 2; s <= n; s++)
 	    {
-	        //calcul de lc[s] en fonction des prédécesseurs de s
-	        lc[s] = 0;
-	        appc[s] = kc+1; // début de la liste des prédécesseurs critiques de s
-	        for (int k = app[s]; (t = fp[k]) != 0; k++)
-	        {
-	            lg = lc[t] + d[t];
-	            if (lg >= lc[s])
-	            {
-	                if (lg > lc[s])
-	                {
-	                    lc[s] = lg; // Nouvelle le candidate a être critique
-	                    kc = appc[s];
-	                    fpc[kc] = t;
-	                }
-	                else // lg == lc[s] : ajouter un nouveau prédécesseur critique
-	                {
-	                    kc++;
-	                    fpc[kc] = t;
-	                }
-	            }
-	        }
-	        kc++ ;
-	        fpc[kc] = 0;//fin de la liste des prédécesseurs critiques de s
-	    }
+		    //calcul de lc[s] en fonction des prédécesseurs de s
+		    lc[s] = 0;
+		    appc[s] = kc+1; // début de la liste des prédécesseurs critiques de s 
+		    for (int k = app[s]; (t = fp[k]) != 0; k++)
+		    {
+			    lg = lc[t] + d[t]; 
+			    if (lg >= lc[s]) 
+			    {
+				    if (lg > lc[s]) 
+				    {
+				    	lc[s] = lg; // Nouvelle lg candidate a être critique 
+				    	kc = appc[s];
+				    	fpc[kc] = t;
+				    }
+				    else // lg == lc[s] : ajouter un nouveau prédécesseur critique 
+				    {
+				    	kc++;
+				    	fpc[kc] = t; 
+				    }
+			    }
+			} //for k
+		    kc++ ;
+		    fpc[kc] = 0; //fin de la liste des prédécesseurs critiques de s
+	    } //for s
 	    fpc[0] = kc;
 	}
 
@@ -227,13 +232,44 @@ public class GrapheOrienteValue extends GrapheOriente {
 	        else if(choix == 2)
 	        {
 	        	//ordonnancement
+	        	fs_aps_2_fp_app();
+	        	int[] d = new int [d_nb_sommet + 1];
+	        	for(int i = 1; i <= d_nb_sommet; i++)
+	        		d[i] = 0;
+	        	for(int i = 1; i <= d_nb_sommet; i++) {
+	        		d[aretes[i].getD_sommet_depart()] = aretes[i].getD_poids();
+	        	}
+	        	int[] lc = new int[d_nb_sommet +1]; 
+	        	int[] fpc;
+	        	int []appc;
+	        	int n = app[0], m = fp[0];
+	    	    fpc = new int[m+1];
+	    	    appc = new int[n+1];
+	        	
+	        	ordonnancement(d, fpc, appc, lc);
+	        	System.out.println("------ Résultats ------");
+	        	System.out.print(">>LC : [ ");
+	            for(int i=1;i<=d_nb_sommet;i++){
+	            	System.out.print(lc[i]+" ");
+	            }
+	            System.out.println("]");
+	            System.out.print(">>FPC : [ ");
+	            for(int i=0;i<=d_nb_aretes;i++){
+	            	System.out.print(fpc[i]+" ");
+	            }
+	            System.out.println("]");
+	            System.out.print(">>APPC : [ ");
+	            for(int i=0;i<=d_nb_sommet;i++){
+	            	System.out.print(appc[i]+" ");
+	            }
+	            System.out.println("]");
 	        }
 	        else if(choix == 3) {
 	        	afficheMatrice();
     			afficheFsAps();
     			afficheAretes();
 	        }
-	        else break;
+	        else System.exit(0);
 	        choix = menu();
 	    }
 	}

@@ -11,6 +11,9 @@ public class Arbre extends GrapheNonOriente {
 	public Arbre() {
 		super();
 	}
+	public Arbre(int val) {
+		super(val);
+	}
 
 	public int[] codage_prufer() {
 	    int n = d_matrice_d_adjascence[0][0];
@@ -169,7 +172,7 @@ public class Arbre extends GrapheNonOriente {
 	                System.out.println("] ");
 	            }
 	        }
-	        else return;
+	        else System.exit(0);
 	        choix = menu();
 	    }
 	}

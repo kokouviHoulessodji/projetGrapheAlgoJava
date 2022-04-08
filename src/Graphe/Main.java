@@ -1,8 +1,11 @@
 package Graphe;
 
+import java.awt.EventQueue;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
+
+import vue.Fenetre;
 
 public class Main {
 
@@ -103,8 +106,18 @@ public class Main {
 				run();
 				break;
 			case 2 :
-				InterfacePrincipale frame = new InterfacePrincipale();
-				frame.setVisible(true);
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							//Main window = new Main();
+							//window.frame.setVisible(true);
+							Fenetre f = new Fenetre();
+							
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 				break;
 			default : break;
 		}

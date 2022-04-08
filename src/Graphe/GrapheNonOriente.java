@@ -7,6 +7,9 @@ public class GrapheNonOriente extends Graphe {
 	public GrapheNonOriente() {
 		super(false);
 	}
+	public GrapheNonOriente(int val) {
+		super(val);
+	}
 	/*
 	 * Déterminer la coloration d'un graphe
 	 */
@@ -91,7 +94,7 @@ public class GrapheNonOriente extends Graphe {
 	    			afficheAretes();
 	    			break;
 	    		default :
-	    			break;
+	    			System.exit(0);
 	    	}
 	        choix = menu();
 	    }

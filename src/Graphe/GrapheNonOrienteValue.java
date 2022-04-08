@@ -9,7 +9,9 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 		saisir_cout();
 	    matriceToAretes();
 	}
-
+	public GrapheNonOrienteValue(int val) {
+		super(val);
+	}
 	public void saisir_cout() {
 		Scanner in = new Scanner(System.in);
 	    int infini = Integer.MAX_VALUE;
@@ -257,7 +259,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    			afficheFsAps();
 	    			afficheAretes();
 	    			break;
-	    		default: break;
+	    		default: System.exit(0);
 	    	}
 	        choix = menu();
 	    }

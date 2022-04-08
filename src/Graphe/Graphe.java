@@ -1,6 +1,15 @@
 package Graphe;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Scanner;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 public class Graphe {
 		protected int[][] d_matrice_d_adjascence;
@@ -12,6 +21,19 @@ public class Graphe {
 
 	public Graphe(boolean oriente) {
 		saisir_graphe(oriente);
+	}
+	public Graphe(int val) {
+		switch(val) {
+			case 1:
+				chargerMatriceFromFichier();
+				break;
+			case 2:
+				chargerFsApsFromFichier();
+				break;
+			case 3:
+				chargerAretesFromFichier();
+				break;
+		}
 	}
 	protected void empiler(int x, int[] pilch) {
 		pilch[x] = pilch[0];
@@ -156,18 +178,21 @@ public class Graphe {
         System.out.println( "-----------------------------MENU------------------------------------- " );
         System.out.println("Comment souhaitez-vous saisir votre graphe? ");
         System.out.println("1 - Sous forme de matrice d'adjascence : taper 1");
-        System.out.println("2 - Sous forme de FS : taper 2");
-        System.out.println("3 - Sous forme de tableau d'arcs ou d'arêtes : taper 3");
-        System.out.println("4 - Pour quitter : taper 4" );
+        System.out.println("2 - Importer un fichier contenant la matrice d'adjascence : taper 2");
+        System.out.println("3 - Sous forme de FS : taper 3");
+        System.out.println("4 - Importer un fichier contenant FS et APS : taper 4");
+        System.out.println("5 - Sous forme de tableau d'arcs ou d'arêtes : taper 5");
+        System.out.println("6 - Importer un fichier contenant les arcs ou les arêtes : taper 6");
+        System.out.println("7 - Pour quitter : taper 7" );
         while(true)
 		{
 			String input = in.nextLine();
 			try
 			{	
 				choix = Integer.parseInt(input);
-				while(choix < 1 || choix > 4)
+				while(choix < 1 || choix > 7)
 		        {
-		        	System.out.print("Faites votre choix entre 1, 2 ou 3 svp merci : ");
+		        	System.out.print("Saisir un nombre correct svp merci : ");
 		        	input = in.nextLine();
 		        	choix = Integer.parseInt(input);
 		        }
@@ -178,70 +203,32 @@ public class Graphe {
 				System.out.print("Vous devez taper une valeur numérique:");
 			}
 		}
-       
+        String fichier;
         switch (choix) {
-            case 1: saisir_matrice(); break;
-            case 2: saisir_fs_aps();break;
-            case 3: 
-            	if(oriente) saisir_arc();
-            	else saisir_aretes();
-            	break;
-            default: break;
-        }
+        	
+	        case 1: saisir_matrice(); break;
+	        case 2: 
+	        	System.out.print("Veuillez saisir le nom du fichier sans l'extension : ");
+	        	fichier = in.nextLine();
+	        	chargerMatriceFromFichier("/Users/simpleprosper/eclipse-workspace/ProjetGrapheAlgo/"+fichier+".txt"); break;
+	        case 3: saisir_fs_aps();break;
+	        case 4:
+	        	System.out.print("Veuillez saisir le nom du fichier sans l'extension : ");
+	        	fichier = in.nextLine();
+	        	chargerFsApsFromFichier("/Users/simpleprosper/eclipse-workspace/ProjetGrapheAlgo/"+fichier+".txt"); break;
+	        case 5: 
+	        	if(oriente) saisir_arc();
+	        	else saisir_aretes();
+	        	break;
+	        case 6:
+	        	System.out.print("Veuillez saisir le nom du fichier sans l'extension : ");
+	        	fichier = in.nextLine();
+	        	chargerAretesFromFichier("/Users/simpleprosper/eclipse-workspace/ProjetGrapheAlgo/"+fichier+".txt"); break;
+	        default: System.exit(0);
+	    }
     }
-    public void matriceFromFichier(String NomFichier)
-    {
-    	/*
-        ifstream file;
-        file.open(NomFichier);
-        if(!file)
-            cout<<"FILE_ERROR";
-        int NombreSommet;
-        int NombreArc;
-        file>>NombreSommet;
-        file>>NombreArc;
-        d_matrice_d_adjascence=new int*[NombreSommet+1];
-        for(int i=0;i<=NombreSommet;i++)
-        {
-            d_matrice_d_adjascence[i]=new int[NombreSommet+1];
-        }
-        d_matrice_d_adjascence[0][0]=NombreSommet;
-        d_matrice_d_adjascence[0][1]=NombreArc;
-        for(int i=2;i<=NombreSommet;i++)
-        {
-            file>>d_matrice_d_adjascence[0][i];
-        }
-        for(int i=1;i<=NombreSommet;i++)
-        {
-            for(int j=0;j<=NombreSommet;j++)
-            {
-                file>>d_matrice_d_adjascence[i][j];
-
-            }
-        }*/
-    }
-    public void fsApsFromFichier(String NomFichier)
-    {
-    	/*
-        ifstream file;
-        file.open(NomFichier);
-        if(!file)
-            cout<<"FILE_ERROR";
-        int tailleFs;
-        file>>tailleFs;
-        d_fs=new int[tailleFs+1];
-        d_fs[0]=tailleFs;
-        for(int j=1;j<=tailleFs;j++){
-            file>>d_fs[j];
-        }
-        int NombreSommet;
-        file>>NombreSommet ;
-        d_aps=new int [NombreSommet+1];
-        d_aps[0]=NombreSommet;
-        for(int j=1;j<=NombreSommet;j++){
-            file>>d_aps[j];
-        }*/
-    }
+    
+    
     /*
      * Méthode qui convertie la matrice d'adjascence en FS et APS
      */
@@ -277,28 +264,34 @@ public class Graphe {
      */
     public void fsApsToMatrice()//TESTED
     {
-        int NombreSommet=d_aps[0];
-        d_matrice_d_adjascence=new int[NombreSommet+1][NombreSommet+1];
-        for(int i=0;i<=NombreSommet;i++){
-            d_matrice_d_adjascence[i]=new int[NombreSommet+1];
-        }
-        for(int i=0;i<=NombreSommet;i++){
-            for(int j=0;j<=NombreSommet;j++){
-                d_matrice_d_adjascence[i][j]=0;
+    	int n = d_aps[0];
+        d_matrice_d_adjascence = new int [n+1][n+1];
+        for (int i = 0; i <= n; i++)
+        	d_matrice_d_adjascence[i] = new int[n + 1];
+        /* ou on alloue juste 2 cases pour la ligne 0 pour ne pas gaspiller la mémoire
+         * mat[0] = new int [2]
+         * for (int i = 1; i <= n; i++)
+            mat[i] = new int[n + 1];
+         */
+        d_matrice_d_adjascence[0][0] = n;// nombre de sommets dans la case 0 de la ligne 0
+        d_matrice_d_adjascence[0][1] = d_fs[0] - n;//nombre d'arcs dans la case 1 de la ligne 1
+        //On initialise le tableau à 0
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= n; j++)
+            	d_matrice_d_adjascence[i][j] = 0;
+        //Boucle principale pour remplir la matrice d'adjacence
+        for (int i = 1; i <= n; i++)
+        {
+            int k = d_aps[i];
+            while (d_fs[k] != 0)
+            {
+            	d_matrice_d_adjascence[i][d_fs[k]] = 1;
+                k++;
             }
-        }
-        d_matrice_d_adjascence[0][0]=NombreSommet;
-
-        int NombreArc=d_fs[0]-NombreSommet;
-        d_matrice_d_adjascence[0][1]=NombreArc;
-
-        int indexFs;
-        for(int i=1;i<=d_aps[0];i++){
-            indexFs=d_aps[i];
-            while(d_fs[indexFs]!=0){
-                d_matrice_d_adjascence[i][d_fs[indexFs]]=1;
-                indexFs++;
-            }
+            /* ou
+             * for(int k=aps[i]; fs[k] != 0; k++)
+             *      mat[i][fs[k]] = 1;
+             */
         }
     }
     /*
@@ -985,12 +978,9 @@ public class Graphe {
     public void aretesToMatrice()//TESTED
     {
         d_matrice_d_adjascence = new int[d_nb_sommet+1][d_nb_sommet+1];
-        d_matrice_d_adjascence[0] = new int[2];
         d_matrice_d_adjascence[0][0] = d_nb_sommet;
         d_matrice_d_adjascence[0][1] = 0;
-        for (int i = 1; i <= d_nb_sommet ; ++i) {
-            d_matrice_d_adjascence[i] = new int[d_nb_sommet+1];
-        }
+        
         for (int i = 1; i <= d_nb_sommet ; ++i) {
             for (int j = 1; j <= d_nb_sommet ; ++j) {
                 d_matrice_d_adjascence[i][j] = 0;
@@ -1026,6 +1016,7 @@ public class Graphe {
     {
         int n = d_aps[0], m = d_fs[0];
         fp = new int [m+1];
+        fp[0] = m;
         app = new int[n+1];
         demi_degre_int();
         app[0] = n;
@@ -1045,7 +1036,7 @@ public class Graphe {
         }
         for (int j = 1; j <= n; ++j)
             fp[app[j]] = 0;
-        for (int j = m; j >= 1; --j)
+        for (int j = n; j >= 1; --j)
             app[j] = app[j-1] + 1;
         app[1] = 1;
     }
@@ -1062,5 +1053,160 @@ public class Graphe {
     {
 
     }
+    public void chargerMatriceFromFichier(String nomFichier) {
+    	
+		
+		try
+		{
+			FileReader file1=new FileReader(nomFichier);
+			BufferedReader in = new BufferedReader(file1);
+			String line;
+			line = in.readLine();
+			d_nb_sommet = Integer.parseInt(line.split(" ")[0]);
+			d_nb_aretes = Integer.parseInt(line.split(" ")[1]);
+			line = in.readLine();
+			d_matrice_d_adjascence = new int[d_nb_sommet+1][d_nb_sommet+1];
+			d_matrice_d_adjascence[0][0] = d_nb_sommet;
+			d_matrice_d_adjascence[0][1] = d_nb_aretes;
+			for(int i=1; i<=d_nb_sommet; i++)
+				d_matrice_d_adjascence[i] = new int[d_nb_sommet+1];
+			int i = 1;
+			while(line != null)
+			{
+				String []tab = line.split(" ");
+				for(int j=0; j<=d_nb_sommet; j++)
+					d_matrice_d_adjascence[i][j] = Integer.parseInt(tab[j]);
+				i++;
+				line = in.readLine();
+			}
+			in.close();	
+			file1.close();
+		}
+		catch(Exception e)
+		{
+			 System.out.println ("Fichier introuvable. "+e.getMessage());
+			
+		}
+		
+		matriceToFsAps();
+		matriceToAretes();
+    }
+    public void chargerAretesFromFichier(String nomFichier) {
+    	
+    	try
+		{
+			FileReader file1=new FileReader(nomFichier);
+			BufferedReader in = new BufferedReader(file1);
+			String line;
+			line = in.readLine();
+			d_nb_sommet = Integer.parseInt(line);
+			line = in.readLine();
+			d_nb_aretes = Integer.parseInt(line);
+			aretes = new Arete[d_nb_aretes];
+			int k = 0;
+			line = in.readLine();
+			while(line != null)
+			{
+				String []tab = line.split(" ");
+				int s = Integer.parseInt(tab[0]);
+				int t = Integer.parseInt(tab[1]);
+				int p = Integer.parseInt(tab[2]);
+				aretes[k] = new Arete(s, t, p);
+				k++;
+				line = in.readLine();
+			}
+			in.close();	
+			file1.close();
+		}
+		catch(Exception e)
+		{
+			 System.out.println ("Fichier introuvable."+e.getMessage());
+			
+		}
+    	aretesToMatrice();
+    	matriceToFsAps();
+    }
+    public void chargerFsApsFromFichier(String nomFichier) {
+    	
+		try
+		{
+			FileReader file1=new FileReader(nomFichier);
+			BufferedReader in = new BufferedReader(file1);
+			String line;
+			
+			line = in.readLine();
+			String []tab1 = line.split(" ");
+			int m = Integer.parseInt(tab1[0]);
+			d_fs = new int[m+1];
+			d_fs[0] = m;
+			for(int j=1; j<=m; j++)
+				d_fs[j] = Integer.parseInt(tab1[j]);
+			
+			line = in.readLine();
+			String []tab2 = line.split(" ");
+			int n = Integer.parseInt(tab2[0]);
+			d_aps = new int[n+1];
+			d_aps[0] = n;
+			for(int j=1; j<=n; j++)
+				d_aps[j] = Integer.parseInt(tab2[j]);
+			
+			d_nb_sommet = n;
+			d_nb_aretes = m - n;
+			in.close();	
+			file1.close();
+		}
+		catch(Exception e)
+		{
+			 System.out.println ("Fichier introuvable. "+e.getMessage());
+			
+		}
+		fsApsToMatrice();
+		matriceToAretes();
+    }
+    public void chargerMatriceFromFichier() {
+    	JFileChooser file=new JFileChooser();
+		int reponse=file.showOpenDialog(null);
+		String nomFichier="";
+		if(reponse==JFileChooser.APPROVE_OPTION)
+		{
+			nomFichier=file.getSelectedFile().getAbsolutePath();
+		}
+		chargerMatriceFromFichier(nomFichier);
+    }
+    public void chargerFsApsFromFichier() {
+    	JFileChooser file=new JFileChooser();
+		int reponse=file.showOpenDialog(null);
+		String nomFichier="";
+		if(reponse==JFileChooser.APPROVE_OPTION)
+		{
+			nomFichier=file.getSelectedFile().getAbsolutePath();
+		}
+		chargerFsApsFromFichier(nomFichier);
+    }
+    public void chargerAretesFromFichier() {
+    	JFileChooser file=new JFileChooser();
+		int reponse=file.showOpenDialog(null);
+		String nomFichier="";
+		if(reponse==JFileChooser.APPROVE_OPTION)
+		{
+			nomFichier=file.getSelectedFile().getAbsolutePath();
+		}
+		chargerAretesFromFichier(nomFichier);
+    }
+    public void afficheMatricetext(JTextArea textArea)
+	{	
+		StringBuilder data=new StringBuilder();
+		data.append(">>>>>>Matrice d'adjascence<<<<<<\n");
+		  for(int i=0;i<=d_matrice_d_adjascence[0][0];i++)
+		  {
+			  for(int j=0;j<=d_matrice_d_adjascence[0][0];j++)
+			  {
+				  data.append(d_matrice_d_adjascence[i][j]+" ");
+			  }
+			  data.append("\n");
+		  }
+		textArea.setText(data.toString());
+		textArea.setEditable(false);
+	}
 
 }

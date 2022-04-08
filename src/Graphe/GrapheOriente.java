@@ -8,6 +8,9 @@ public class GrapheOriente extends Graphe{
 	{
 		super(true);
 	}
+	public GrapheOriente(int val) {
+		super(val);
+	}
 	/*
 	Graphe_oriente Graphe_oriente::calculerGrapheReduit(int *prem, int *pilch, int *cfc, int *fs, int *aps, int *&fsr, int *&apsr) const {
 	    int s, kr = 1, nbc = prem[0];
@@ -325,7 +328,8 @@ public class GrapheOriente extends Graphe{
 	            }
 	            	
 	        }
-	        else break;
+	        else if(choix == 6)
+	        	System.exit(0);
 	        choix = menu();
 	    }
 	}
