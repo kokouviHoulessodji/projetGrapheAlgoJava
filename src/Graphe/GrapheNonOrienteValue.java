@@ -2,15 +2,38 @@ package Graphe;
 
 import java.util.Scanner;
 
+import javax.swing.JTextArea;
+
 public class GrapheNonOrienteValue extends GrapheNonOriente {
 	private int [][]d_cout;
-	public GrapheNonOrienteValue() {
-		super();
+	public GrapheNonOrienteValue(boolean oriente) {
+		super(oriente);
 		saisir_cout();
 	    matriceToAretes();
 	}
 	public GrapheNonOrienteValue(int val) {
 		super(val);
+		remplirCout();
+	}
+	public GrapheNonOrienteValue()
+	{
+		super();
+	}
+	public void remplirCout() {
+		int infini = Integer.MAX_VALUE;
+	    int n = d_aps[0];
+	    int m = d_nb_aretes;
+	    d_cout = new int[n+1][n+1];
+	    d_cout[0] = new int[2];
+	    d_cout[0][0] = n;
+	    for (int i = 1; i <= n ; ++i)
+	        d_cout[i] = new int[n+1];
+	    for (int i = 1; i <= n ; ++i)
+	        for (int j = 1; j <= n ; ++j)
+	            d_cout[i][j] = infini;
+	    for (int i = 0; i < m ; ++i) {
+	        d_cout[aretes[i].getD_sommet_depart()][aretes[i].getD_sommet_arrive()] = aretes[i].getD_poids();
+	    }
 	}
 	public void saisir_cout() {
 		Scanner in = new Scanner(System.in);
@@ -45,7 +68,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    }
 	}
 
-	public void kruskal(int []prem, int []pilch, int []cfc) 
+	public void kruskal(GrapheNonOrienteValue t) 
 	{
 	    trier();
 	    afficheAretes();
@@ -53,59 +76,44 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    int n = d_matrice_d_adjascence[0][0];
 	    //Initialiser cfc, pilch et prem
 	    
-	    GrapheNonOrienteValue t = new GrapheNonOrienteValue();
+	    t = new GrapheNonOrienteValue();
+	    t.d_nb_sommet = n;
+	    t.d_nb_aretes = n-1;
+	    
 	    t.aretes = new Arete[n-1];
+	    System.out.println(">>>>>Le nouveau graphe obtenu contient les arêtes suivants : \n");
 	    for (int i = 0; i < n-1; ++i)
 	    {
 	        s = aretes[i].getD_sommet_depart();
 	        tt = aretes[i].getD_sommet_arrive();
 	        if(cfc[s] != cfc[tt])
 	        {
+	        	System.out.println("[ "+s+" "+tt+" ]");
 	        	t.aretes[k] = aretes[i];
 	        	k++;
-	            fusionner(cfc[s], cfc[tt], prem, pilch, cfc);
-	            
-	            System.out.println("---- i = "+i+" -----");
-	            
-	            System.out.print("CFC : ");
-	            for (int j = 0; j <= n ; ++j) {
-	            	System.out.print(cfc[j]+" ");
-	            }
-	            System.out.println();
-	            System.out.print("PILCH : ");
-	            for (int j = 0; j <= n ; ++j) {
-	            	System.out.print(pilch[j]+" ");
-	            }
-	            System.out.println();
-	            System.out.print("PREM : ");
-	            for (int j = 0; j <= n ; ++j) {
-	            	System.out.print(prem[j]+" ");
-	            }
-	            System.out.println();
+	            fusionner(cfc[s], cfc[tt]);
 	        }
 	    }
-	    t.aretesToMatrice();
-	    t.matriceToFsAps();
 	    System.out.println("Résultats");
         System.out.print(">>PREM [ ");
         for(int i=1; i<=d_nb_sommet; ++i)
         	System.out.print(prem[i]+" ");
-        System.out.println();
+        System.out.println("]");
         System.out.print(">>PILCH [ ");
         for(int i=1; i<=d_nb_sommet; ++i)
         	System.out.print(pilch[i]+" ");
-        System.out.println();
+        System.out.println("]");
         System.out.print(">>CFC [ ");
         for(int i=1; i<=d_nb_sommet; ++i)
         	System.out.print(cfc[i]+" ");
-        System.out.println();
-        System.out.println(">>Les caractéristiques du graphe recevrant minimal obtenu");
-        t.afficheMatrice();
-        t.afficheFsAps();
-        t.afficheAretes();
+        System.out.println("]");
+        
+        //t.afficheMatrice();
+        //t.afficheFsAps();
+        //t.afficheAretes();
 	}
 
-	public void fusionner(int i, int j, int []prem, int []pilch, int []cfc)
+	public void fusionner(int i, int j)
 	// i et j sont les numéros des composantes à fusionner
 	// en une seule composante qui portera le numéro le plus
 	// petit des deux
@@ -125,7 +133,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	}
 	//TESTED
 	//2e version avec un seul parcours de prem de i
-	public void fusionner2(int i, int j, int []prem, int []pilch, int []cfc)
+	public void fusionner2(int i, int j)
 	{
 	    //Si on veut favoriser la composante ayant le plus petit numéro
 	    //if(i < j) std::swap(i, j);
@@ -140,12 +148,11 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    prem[j] = prem[i];
 	}
 
-	public boolean Dantzig() {
+	public boolean Dantzig(StringBuilder data) {
 	    //c : matrice des coûts qui sera remplacée par la matrice des distances
 	    //Renvoie false si le graphe contient un circuit absorbant
 	    int n = (int)(d_cout[0][0]);
-	    int [][]c = new int[n+1][n+1];
-	    c = d_cout;
+	    int [][]c = d_cout;
 	    int k, i ,j;
 	    int x;
 	    for (k = 1; k < n; ++k)
@@ -163,11 +170,22 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	            {
 	                System.out.println("Présence d'un circuit absorbant passant par " + i + " et "+ (k+1));
 	                System.out.println("Nouvelle Matrice des couts :");
+	                data.append("Présence d'un circuit absorbant passant par " + i + " et "+ (k+1)+"\n");
+	                data.append("Nouvelle Matrice des couts :\n");
 	                for (int l = 1; l <= n ; ++l) {
 	                    for (int p = 1; p <= n ; ++p) {
-	                    	System.out.print(c[l][p]+" ");
+	                    	if(c[l][p] == Integer.MAX_VALUE) {
+	                    		System.out.print("∞ ");
+		                    	data.append("∞ ");
+	                    	}
+	                    	else {
+	                    		System.out.print(c[l][p]+" ");
+		                    	data.append(c[l][p]+" ");
+	                    	}
+	                    	
 	                    }
 	                    System.out.println();
+	                    data.append("\n");
 	                }
 	                return false;
 	            }
@@ -179,13 +197,24 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    }//fin for k
 	    
 	    System.out.println("Nouvelle Matrice des couts :");
-        for (int l = 1; l <= n ; ++l) {
+	    data.append("Nouvelle Matrice des couts :\n");
+	    for (int l = 1; l <= n ; ++l) {
             for (int p = 1; p <= n ; ++p) {
-            	System.out.print(c[l][p]+" ");
+            	if(c[l][p] == Integer.MAX_VALUE) {
+            		System.out.print("∞ ");
+                	data.append("∞ ");
+            	}
+            	else {
+            		System.out.print(c[l][p]+" ");
+                	data.append(c[l][p]+" ");
+            	}
+            	
             }
             System.out.println();
+            data.append("\n");
         }
         System.out.println("Non présence d'un circuit absorbant");
+        data.append("Non présence d'un circuit absorbant\n");
 	    return true;
 	}
 
@@ -225,35 +254,28 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    	switch(choix)
 	    	{
 	    		case 1:
-	    			int[] prem = new int[d_nb_sommet+1];
-		            int[] pilch = new int[d_nb_sommet+1];
-		            int[] cfc = new int[d_nb_sommet+1];
+	    			prem = new int[d_nb_sommet+1];
+		            pilch = new int[d_nb_sommet+1];
+		            cfc = new int[d_nb_sommet+1];
 		            for (int i = 0; i <= d_nb_sommet ; ++i) {
 		    	        cfc[i] = i;
 		    	        prem[i] = i;
 		    	        pilch[i] = 0;
 		    	    }
-		            kruskal(prem, pilch, cfc);
-		            /*
-		            System.out.println("Résultats");
-		            System.out.print(">>PREM [ ");
-		            for(int i=1; i<=d_nb_sommet; ++i)
-		            	System.out.print(prem[i]+" ");
-		            System.out.println();
-		            System.out.print(">>PILCH [ ");
-		            for(int i=1; i<=d_nb_sommet; ++i)
-		            	System.out.print(pilch[i]+" ");
-		            System.out.println();
-		            System.out.print(">>CFC [ ");
-		            for(int i=1; i<=d_nb_sommet; ++i)
-		            	System.out.print(cfc[i]+" ");
-		            System.out.println();
+		            GrapheNonOrienteValue t = new GrapheNonOrienteValue();
+		            kruskal(t);
 		            System.out.println(">>Les caractéristiques du graphe recevrant minimal obtenu");
+		            t.aretesToMatrice();
+		            t.matriceToFsAps();
 		            t.afficheMatrice();
-		            t.afficheFsAps();*/
+		            t.afficheFsAps();
+		            
+		            //System.out.println(">>Les caractéristiques du graphe recevrant minimal obtenu");
+		            //t.afficheMatrice();
+		            //t.afficheFsAps();
 		            break;
 	    		case 2:
-	    			System.out.println(Dantzig());
+	    			System.out.println(Dantzig(null));
 	    		case 3:
 	    			afficheMatrice();
 	    			afficheFsAps();
@@ -263,6 +285,55 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    	}
 	        choix = menu();
 	    }
+	}
+	@Override
+	public void afficheAretestext(JTextArea textArea)
+	{	
+		StringBuilder data=new StringBuilder();
+		data.append(">>>>>>ARETES<<<<<<\n");
+		data.append("Nombre d'arêtes = "+d_nb_aretes+"\n");
+		  for(int i=0;i<d_nb_aretes;i++)
+		  {
+			  data.append("Arête n "+(i+1)+" : [ "+aretes[i].getD_sommet_depart()+" "+aretes[i].getD_sommet_arrive()+" ] - coût : "+aretes[i].getD_poids()+"\n");
+		  }
+		textArea.setText(data.toString());
+		//textArea.setEditable(false);
+	}
+	public void kurskalText(JTextArea textArea)
+	{	
+		StringBuilder data=new StringBuilder();
+		prem = new int[d_nb_sommet+1];
+        pilch = new int[d_nb_sommet+1];
+        cfc = new int[d_nb_sommet+1];
+        for (int i = 0; i <= d_nb_sommet ; ++i) {
+	        cfc[i] = i;
+	        prem[i] = i;
+	        pilch[i] = 0;
+	    }
+        GrapheNonOrienteValue t = new GrapheNonOrienteValue();
+        kruskal(t);
+        data.append(">>PREM [ ");
+        for(int i=1; i<=d_nb_sommet; ++i)
+        	data.append(prem[i]+" ");
+        data.append("]\n");
+        data.append(">>PILCH [ ");
+        for(int i=1; i<=d_nb_sommet; ++i)
+        	data.append(pilch[i]+" ");
+        data.append("]\n");
+        data.append(">>CFC [ ");
+        for(int i=1; i<=d_nb_sommet; ++i)
+        	data.append(cfc[i]+" ");
+        data.append("]\n");
+        data.append(">>Les caractéristiques du graphe recevrant minimal obtenu\n");
+        //t.afficheMatrice();
+        //t.afficheFsAps();
+		textArea.setText(data.toString());
+		//textArea.setEditable(false);
+	}
+	public void dantzigText(JTextArea resultat) {
+		StringBuilder data = new StringBuilder();
+		System.out.println(Dantzig(data));
+		resultat.setText(data.toString());
 	}
 
 }

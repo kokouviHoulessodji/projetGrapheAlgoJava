@@ -51,23 +51,23 @@ public class Main {
 	    	switch(choix)
 	    	{
 	    		case 1 : 
-	    			GrapheOriente graphe_oriente = new GrapheOriente();
+	    			GrapheOriente graphe_oriente = new GrapheOriente(true);
 	    			graphe_oriente.run();
 	    			break;
 	    		case 2 :
-	    			GrapheOrienteValue graphe_oriente_value = new GrapheOrienteValue();
+	    			GrapheOrienteValue graphe_oriente_value = new GrapheOrienteValue(true);
 		            graphe_oriente_value.run();
 		            break;
 	    		case 3 :
-	    			GrapheNonOriente graphe_non_oriente = new GrapheNonOriente();
+	    			GrapheNonOriente graphe_non_oriente = new GrapheNonOriente(false);
 		            graphe_non_oriente.run();
 		            break;
 	    		case 4 :
-	    			GrapheNonOrienteValue graphe_non_oriente_value = new GrapheNonOrienteValue();
+	    			GrapheNonOrienteValue graphe_non_oriente_value = new GrapheNonOrienteValue(false);
 		            graphe_non_oriente_value.run();
 		            break;
 	    		case 5 :
-	    			Arbre arbre = new Arbre();
+	    			Arbre arbre = new Arbre(false);
 		            arbre.run();
 		            break;
 	    		default : break;

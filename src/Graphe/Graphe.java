@@ -13,7 +13,7 @@ import javax.swing.JTextArea;
 
 public class Graphe {
 		protected int[][] d_matrice_d_adjascence;
-		protected int[] d_fs, d_aps, ddi, dde, app, fp, prem, pilch, cfc, num, ro, tarj, apsr, fsr, br;
+		protected int[] d_fs, d_aps, ddi, dde, app, fp, prem, pilch, cfc, num, ro, tarj, apsr, fsr, br, pred;
 		protected boolean []entarj;
 		protected Arete[] aretes;
 		protected int d_nb_sommet;
@@ -23,17 +23,10 @@ public class Graphe {
 		saisir_graphe(oriente);
 	}
 	public Graphe(int val) {
-		switch(val) {
-			case 1:
-				chargerMatriceFromFichier();
-				break;
-			case 2:
-				chargerFsApsFromFichier();
-				break;
-			case 3:
-				chargerAretesFromFichier();
-				break;
-		}
+		
+	}
+	public Graphe() {
+		
 	}
 	protected void empiler(int x, int[] pilch) {
 		pilch[x] = pilch[0];
@@ -241,22 +234,20 @@ public class Graphe {
         d_fs[0]=NombreSommet+NombreArc;
         d_aps=new int[NombreSommet+1];
         d_aps[0]=NombreSommet;
-        int indexFs=1;
-        int indexAps=indexFs;
+        int k = 1;
         for(int i=1;i<=NombreSommet;i++)
         {
-            d_aps[indexAps]=indexFs;
+        	d_aps[i] = k;
             for(int j=1;j<=NombreSommet;j++)
             {
                 if(d_matrice_d_adjascence[i][j]==1)
                 {
-                    d_fs[indexFs]=j;
-                    indexFs++;
+                    d_fs[k]=j;
+                    k++;
                 }
             }
-            d_fs[indexFs]=0;
-            indexFs++;
-            indexAps++;
+            d_fs[k]=0;
+            k++;
         }
     }
     /*
@@ -882,6 +873,7 @@ public class Graphe {
     	int []rang;
     	int n = d_aps[0], taillefs = d_fs[0], s, k,h,t;
         rang = new int[n+1];
+        rang[0] = n;
         int[] d_ddi= new int[n+1];
         pilch= new int[n+1];
         prem= new int[n+1];
@@ -998,6 +990,7 @@ public class Graphe {
     {
         int p;
         int m = d_nb_aretes;
+        
         for (int i = 0; i < m - 1; i++) {
             for (int j = i + 1; j < m; j++) {
                 if ((aretes[j].getD_poids() < aretes[i].getD_poids()) || (aretes[j].getD_poids() == aretes[i].getD_poids() && aretes[j].getD_sommet_depart() < aretes[i].getD_sommet_arrive()) ||
@@ -1087,11 +1080,56 @@ public class Graphe {
 			 System.out.println ("Fichier introuvable. "+e.getMessage());
 			
 		}
-		
-		matriceToFsAps();
-		matriceToAretes();
+		//afficheMatrice();
+		if(d_matrice_d_adjascence != null)
+		{
+			matriceToFsAps();
+			matriceToAretes();
+		}
     }
     public void chargerAretesFromFichier(String nomFichier) {
+    	
+    	try
+		{
+			FileReader file1=new FileReader(nomFichier);
+			BufferedReader in = new BufferedReader(file1);
+			String line;
+			line = in.readLine();
+			d_nb_sommet = Integer.parseInt(line);
+			line = in.readLine();
+			d_nb_aretes = Integer.parseInt(line);
+			aretes = new Arete[d_nb_aretes];
+			d_matrice_d_adjascence = new int[d_nb_sommet+1][d_nb_sommet+1];
+			d_matrice_d_adjascence[0][0] = d_nb_sommet;
+			d_matrice_d_adjascence[0][1] = 2*d_nb_aretes;
+			for(int i=1; i<=d_nb_sommet; i++)
+				for(int j=1; j<=d_nb_sommet; j++)
+					d_matrice_d_adjascence[i][j] = 0;
+			int k = 0;
+			line = in.readLine();
+			while(line != null)
+			{
+				String []tab = line.split(" ");
+				int s = Integer.parseInt(tab[0]);
+				int t = Integer.parseInt(tab[1]);
+				int p = Integer.parseInt(tab[2]);
+				aretes[k] = new Arete(s, t, p);
+				d_matrice_d_adjascence[s][t] = 1;
+				d_matrice_d_adjascence[t][s] = 1;
+				k++;
+				line = in.readLine();
+			}
+			in.close();	
+			file1.close();
+			//afficheMatrice()
+        	matriceToFsAps();
+		}
+		catch(Exception e)
+		{
+			 System.out.println ("Fichier introuvable."+e.getMessage());
+		}
+    }
+    public void chargerArcsFromFichier(String nomFichier) {
     	
     	try
 		{
@@ -1117,14 +1155,13 @@ public class Graphe {
 			}
 			in.close();	
 			file1.close();
+			aretesToMatrice();
+        	matriceToFsAps();
 		}
 		catch(Exception e)
 		{
 			 System.out.println ("Fichier introuvable."+e.getMessage());
-			
 		}
-    	aretesToMatrice();
-    	matriceToFsAps();
     }
     public void chargerFsApsFromFichier(String nomFichier) {
     	
@@ -1160,8 +1197,11 @@ public class Graphe {
 			 System.out.println ("Fichier introuvable. "+e.getMessage());
 			
 		}
-		fsApsToMatrice();
-		matriceToAretes();
+		if(d_fs != null && d_aps != null)
+		{
+			fsApsToMatrice();
+			matriceToAretes();
+		}
     }
     public void chargerMatriceFromFichier() {
     	JFileChooser file=new JFileChooser();
@@ -1193,6 +1233,16 @@ public class Graphe {
 		}
 		chargerAretesFromFichier(nomFichier);
     }
+    public void chargerArcsFromFichier() {
+    	JFileChooser file=new JFileChooser();
+		int reponse=file.showOpenDialog(null);
+		String nomFichier="";
+		if(reponse==JFileChooser.APPROVE_OPTION)
+		{
+			nomFichier=file.getSelectedFile().getAbsolutePath();
+		}
+		chargerAretesFromFichier(nomFichier);
+    }
     public void afficheMatricetext(JTextArea textArea)
 	{	
 		StringBuilder data=new StringBuilder();
@@ -1206,7 +1256,49 @@ public class Graphe {
 			  data.append("\n");
 		  }
 		textArea.setText(data.toString());
-		textArea.setEditable(false);
+		//textArea.setEditable(false);
 	}
+    public void afficheFsApstext(JTextArea textArea)
+	{	
+		StringBuilder data=new StringBuilder();
+		data.append(">>>>>>FS<<<<<<\n");
+		  for(int i=0;i<=d_fs[0];i++)
+		  {
+			  data.append(d_fs[i]+" ");
+		  }
+		  data.append("\n");
+		  data.append(">>>>>>APS<<<<<<\n");
+		  for(int i=0;i<=d_aps[0];i++)
+		  {
+			  data.append(d_aps[i]+" ");
+		  }
+		  data.append("\n");
+		textArea.setText(data.toString());
+		//textArea.setEditable(false);
+	}
+    public void afficheAretestext(JTextArea textArea)
+	{	
+		StringBuilder data=new StringBuilder();
+		data.append(">>>>>>ARETES ou ARCS<<<<<<\n");
+		data.append("Nombre d'arêtes ou d'arcs = "+d_nb_aretes+"\n");
+		  for(int i=0;i<d_nb_aretes;i++)
+		  {
+			  data.append("[ "+aretes[i].getD_sommet_depart()+" "+aretes[i].getD_sommet_arrive()+" ]\n");
+		  }
+		textArea.setText(data.toString());
+	}
+    public boolean estUnArbre() {
+    	for(int i=1; i<=d_nb_sommet; i++) {
+    		int k = d_aps[i];
+    		int n = 0;
+    		while(k<=d_fs[0] && d_fs[k] != 0) {
+    			n++;
+    			k++;
+    		}
+    		if( n == 1 && d_nb_aretes == d_nb_sommet-1)
+    			return true;
+    	}
+    	return false;
+    }
 
 }

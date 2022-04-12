@@ -2,13 +2,29 @@ package Graphe;
 
 import java.util.Scanner;
 
+import javax.swing.JTextArea;
+
 public class GrapheNonOriente extends Graphe {
 
-	public GrapheNonOriente() {
-		super(false);
+	public GrapheNonOriente(boolean oriente) {
+		super(oriente);
+	}
+	public GrapheNonOriente()
+	{
+		super();
 	}
 	public GrapheNonOriente(int val) {
-		super(val);
+		switch(val) {
+			case 1:
+				chargerMatriceFromFichier();
+				break;
+			case 2:
+				chargerFsApsFromFichier();
+				break;
+			case 3:
+				chargerAretesFromFichier();
+				break;
+		}
 	}
 	/*
 	 * Déterminer la coloration d'un graphe
@@ -99,5 +115,18 @@ public class GrapheNonOriente extends Graphe {
 	        choix = menu();
 	    }
 	}
+	public void colorationText(JTextArea textArea) {
+		int []f = coloration();
+        int nChr = nombre_chromatique(f);
+        StringBuilder data=new StringBuilder();
+    	data.append(">>>>>>La coloration correspondant à votre graphe est : \n");
+        for (int i = 1; i <= f[0] ; ++i) {
+        	data.append("Couleur du sommet "+i+" = "+f[i]+" \n");
+        }
+        data.append("\n");
+        data.append("Le nombre chromatique du graphe est égal à "+nChr+"\n");
+        textArea.setText(data.toString());
+	}
+	
 
 }

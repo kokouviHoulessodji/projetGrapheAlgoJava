@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
+import javax.swing.JTextArea;
 
 public class Arbre extends GrapheNonOriente {
 
@@ -14,12 +15,16 @@ public class Arbre extends GrapheNonOriente {
 	public Arbre(int val) {
 		super(val);
 	}
+	public Arbre(boolean oriente) {
+		super(oriente);
+	}
+	
 
 	public int[] codage_prufer() {
 	    int n = d_matrice_d_adjascence[0][0];
-	    //System.out.println("n = "+n);
+	    System.out.println("n = "+n);
 	    int[][] mat = getMatrice();
-
+	    
 	    int[] p = new int[n-1];
 	    p[0] = n-2;
 	    for (int i = 1; i <= n ; ++i)
@@ -27,14 +32,19 @@ public class Arbre extends GrapheNonOriente {
 	        mat[i][0] = 0;
 	        for (int j = 1; j <= n; ++j)
 	            mat[i][0] += mat[i][j];
-	    }
+	    }/*
+	    for (int i = 0; i <= n ; ++i) {
+	    	for (int j = 0; j <= n ; ++j)
+	    		System.out.print(mat[i][j]+" ");
+	    	System.out.println("");
+        }*/
 	    for (int k = 1; k <= n-2 ; ++k)
 	    {
 	        int i = 1;
-	        while(mat[i][0] != 1)
+	        while(i<=n && mat[i][0] != 1)
 	            i++;
 	        int j = 1; //unique voisin de i
-	        while(mat[i][j] != 1)
+	        while(j<= n && mat[i][j] != 1)
 	            j++;
 	        p[k] = j;
 	        mat[i][j] = 0;
@@ -45,10 +55,11 @@ public class Arbre extends GrapheNonOriente {
 	    return p;
 	}
 
-	public int[][] decodage_prufer(int []codage) {
+	public static int[][] decodage_prufer(int []codage, StringBuilder data) {
 	    int m = codage[0], n = m+2;
 	    int [][]mat = new int[n+1][n+1];
 	    mat[0][0] = n;
+	    mat[0][1] = 0;
 	    for (int i = 1; i <= n; ++i)
 	        for (int j = 1; j <= n ; ++j)
 	            mat[i][j] = 0;
@@ -58,19 +69,24 @@ public class Arbre extends GrapheNonOriente {
 	    for (int i = 1; i <= m ; ++i)
 	        s[codage[i]]++;
 	    System.out.println("Les arêtes du graphe correspondant au codage donné sont :");
+	    data.append("Les arêtes du graphe correspondant au codage donné sont :\n");
 	    for (int i = 1; i <= m ; ++i)
 	    {
 	    	System.out.print("[ "+codage[i]);
+	    	data.append("[ "+codage[i]);
 	        int k = 1;
 	        while(s[k] != 0)
 	            k++;
 	        System.out.println(" "+k+" ]");
+	        data.append(" "+k+" ]\n");
 	        s[k] = -1;
 	        s[codage[i]]--;
 	        mat[codage[i]][k] = 1;
 	        mat[k][codage[i]] = 1;
+	        mat[0][1] = mat[0][1] + 2;
 	    }
 	    System.out.print("[ ");
+	    data.append("[ ");
 	    int[] sd = new int[2];
 	    int j = 0;
 	    for (int i = 1; i <= n ; ++i) {
@@ -78,12 +94,16 @@ public class Arbre extends GrapheNonOriente {
 	        if(s[i] == 0) {
 	            sd[j] = i;
 	            System.out.print(i+" ");
+	            if(data != null)
+	            	data.append(i+" ");
 	            j++;
 	        }
 	    }
 	    mat[sd[0]][sd[1]] = 1;
 	    mat[sd[1]][sd[0]] = 1;
+	    mat[0][1] = mat[0][1] + 2;
 	    System.out.println("]");
+	    data.append("]\n");
 	    return mat;
 	}
 	public int menu()
@@ -119,12 +139,16 @@ public class Arbre extends GrapheNonOriente {
 	    while(choix != 3)
 	    {
 	        if(choix == 1){
-	            int []codage = codage_prufer();
-	            System.out.print(">>Le codage de prufer correspondant au graphe est : [ ");
-	            for (int i = 1; i <= codage[0] ; ++i) {
-	            	System.out.print(codage[i]+" ");
-	            }
-	            System.out.println("] ");
+	        	if(estUnArbre()) {
+	        		int []codage = codage_prufer();
+		            System.out.print(">>Le codage de prufer correspondant au graphe est : [ ");
+		            for (int i = 1; i <= codage[0] ; ++i) {
+		            	System.out.print(codage[i]+" ");
+		            }
+		            System.out.println("] ");
+	        	}
+	        	else
+	        		System.out.println("Ce graphe n'est pas un arbre donc prufer ne s'applique pas à lui.");
 	        }
 	        else if(choix == 2)
 	        {
@@ -162,7 +186,7 @@ public class Arbre extends GrapheNonOriente {
 	    				}
 	    			}
 	            }
-	            int [][]mat = decodage_prufer(codage);
+	            int [][]mat = decodage_prufer(codage, null);
 	            System.out.println(">>Le graphe correspondant à ce codage a pour matrice : ");
 	            for (int i = 1; i <= mat[0][0] ; ++i) {
 	            	System.out.print("[ ");
@@ -212,5 +236,66 @@ public class Arbre extends GrapheNonOriente {
 			System.out.println("Problem fichier");
 		}
 		return null;
+	}
+	public void pruferCodageText(JTextArea textArea) {
+        StringBuilder data=new StringBuilder();
+        if(estUnArbre()) {
+	        int []codage = codage_prufer();
+	        data.append(">>Le codage de prufer correspondant au graphe est : [ ");
+	        for (int i = 1; i <= codage[0] ; ++i) {
+	        	data.append(codage[i]+" ");
+	        }
+	        data.append("] ");
+        }
+        else
+        {
+        	data.append("Ce graphe n'est pas un arbre donc prufer ne s'applique pas à lui.\n");
+        }
+        textArea.setText(data.toString());
+	}
+	public static void pruferDecodageText(JTextArea textArea) {
+		JFileChooser file=new JFileChooser();
+		int reponse=file.showOpenDialog(null);
+		String nomFichier="";
+		if(reponse==JFileChooser.APPROVE_OPTION)
+		{
+			nomFichier=file.getSelectedFile().getAbsolutePath();
+		}
+		try
+		{
+			FileReader file1=new FileReader(nomFichier);
+			BufferedReader in = new BufferedReader(file1);
+			String line;
+			
+			line = in.readLine();;
+			int n = Integer.parseInt(line);
+			int []codage = new int[n+1];
+            codage[0] = n;
+            System.out.print(">>Rentrer les valeurs du tableau de codage : ");
+            line = in.readLine();
+            String[] tab = line.split(" ");
+            for (int i = 0; i < tab.length ; ++i) {
+                codage[i+1] = Integer.parseInt(tab[i]);
+            }
+            StringBuilder data=new StringBuilder();
+            int [][]mat = decodage_prufer(codage, data);
+            
+    		data.append(">>>>>>Le graphe correspondant à ce codage a pour matrice d'adjascence\n");
+            for (int i = 0; i <= mat[0][0] ; ++i) {
+            	data.append("[ ");
+                for (int j = 0; j <= mat[0][0] ; ++j) {
+                	data.append(mat[i][j]+" ");
+                }
+                data.append("] \n");
+            }
+            textArea.setText(data.toString());
+			in.close();	
+			file1.close();
+		}
+		catch(Exception e)
+		{
+			 System.out.println ("Fichier introuvable. "+e.getMessage());
+			
+		}
 	}
 }

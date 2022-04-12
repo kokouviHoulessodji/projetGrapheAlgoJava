@@ -2,14 +2,30 @@ package Graphe;
 
 import java.util.Scanner;
 
+import javax.swing.JTextArea;
+
 public class GrapheOriente extends Graphe{
 
+	public GrapheOriente(boolean oriente)
+	{
+		super(oriente);
+	}
 	public GrapheOriente()
 	{
-		super(true);
+		super();
 	}
 	public GrapheOriente(int val) {
-		super(val);
+		switch(val) {
+			case 1:
+				chargerMatriceFromFichier();
+				break;
+			case 2:
+				chargerFsApsFromFichier();
+				break;
+			case 3:
+				chargerArcsFromFichier();
+				break;
+		}
 	}
 	/*
 	Graphe_oriente Graphe_oriente::calculerGrapheReduit(int *prem, int *pilch, int *cfc, int *fs, int *aps, int *&fsr, int *&apsr) const {
@@ -148,7 +164,7 @@ public class GrapheOriente extends Graphe{
 	    }
 	}
 
-	public void fortconnexe(int []pred) {
+	public void fortconnexe() {
 
 	    int n = d_aps[0];
 	    prem = new int[n + 1];
@@ -172,10 +188,7 @@ public class GrapheOriente extends Graphe{
 	        if (num[s] == 0)
 	            traverse(s, k);
 	    prem[0] = k;
-	    System.out.print(">>PRED : [ ");
-        for(int i=1; i<=n; i++)
-        	System.out.print(pred[i]+" ");
-        System.out.println(" ]");
+	    
 	}
 
 	public int menu()
@@ -255,7 +268,7 @@ public class GrapheOriente extends Graphe{
 	        else if(choix == 2)
 	        {
 	        	int n = d_aps[0];
-	            int []pred = null;
+	            pred = new int[n + 1];
 	            prem = new int[n + 1];
 	    	    pilch = new int[n + 1];
 	    	    cfc = new int[n + 1];
@@ -263,7 +276,7 @@ public class GrapheOriente extends Graphe{
 	    	    entarj = new boolean[n + 1];
 	    	    num = new int[n + 1];
 	    	    ro = new int[n + 1];
-	            fortconnexe(pred);
+	            fortconnexe();
 	            System.out.print(">>NUM : [ ");
 	            for(int i=1; i<=n; i++)
 	            	System.out.print(num[i]+" ");
@@ -333,22 +346,67 @@ public class GrapheOriente extends Graphe{
 	        choix = menu();
 	    }
 	}
-	public void afficherMatriceConsole() {
-		// TODO Auto-generated method stub
-		
+	public void afficheTarjanText(JTextArea textArea) {
+		StringBuilder data=new StringBuilder();
+		int n = d_aps[0];
+        pred = new int[n + 1];
+        prem = new int[n + 1];
+	    pilch = new int[n + 1];
+	    cfc = new int[n + 1];
+	    tarj = new int[n + 1];
+	    entarj = new boolean[n + 1];
+	    num = new int[n + 1];
+	    ro = new int[n + 1];
+        fortconnexe();
+        data.append(">>>>>>PRED : [ ");
+        for(int i=1; i<=n; i++)
+        	data.append(pred[i]+" ");
+        data.append("]\n");
+        data.append(">>>>>>NUM : [ ");
+        for(int i=0;i<n;i++)
+		  {
+			  data.append(num[i]+" ");
+		  }
+        data.append("]\n");
+        data.append(">>>>>>RO : [ ");
+        for(int i=0;i<n;i++)
+		  {
+			  data.append(ro[i]+" ");
+		  }
+        data.append("]\n");
+        data.append(">>>>>>PREM : [ ");
+        for(int i=0;i<n;i++)
+		  {
+			  data.append(prem[i]+" ");
+		  }
+        data.append("]\n");
+        data.append(">>>>>>PILCH : [ ");
+        for(int i=0;i<n;i++)
+		  {
+			  data.append(pilch[i]+" ");
+		  }
+        data.append("]\n");
+        data.append(">>>>>>CFC : [ ");
+        for(int i=0;i<n;i++)
+		  {
+			  data.append(cfc[i]+" ");
+		  }
+        data.append("]\n");
+        data.append(">>>>>>TARJ : [ ");
+        for(int i=0;i<n;i++)
+		  {
+			  data.append(tarj[i]+" ");
+		  }
+        data.append("]\n");
+        data.append(">>>>>>ENTARJ : [ ");
+        for(int i=0;i<n;i++)
+		  {
+			  data.append(entarj[i]+" ");
+		  }
+        data.append("]\n");
+		textArea.setText(data.toString());
 	}
-	public void afficherMatriceText() {
-		// TODO Auto-generated method stub
-		
-	}
-	public void afficherFsApsDConsole() {
-		// TODO Auto-generated method stub
-		
-	}
-	public void afficherFsApsText() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 
 }
