@@ -26,62 +26,60 @@ public class InterfaceOrienteValue extends JPanel {
 		super(null);
 		this.setBackground(Color.white);
         this.setLayout(null);
-		JLabel sais = new JLabel("Importer le graphe");
-        sais.setBounds(10, 10, 160, 21);
+        JLabel sais = new JLabel("Importer le graphe");
+        sais.setBounds(10, 10, 150, 30);
         add(sais);
         erreur = new JLabel("Erreur");
 		erreur.setBounds(340, 30, 130, 21);
 		erreur.setVisible(false);
 		add(erreur);
 		afficherMatrice = new JButton("Afficher matrice");
-        afficherMatrice.setBounds(10, 80, 130, 21);
+        afficherMatrice.setBounds(10, 80, 150, 30);
+        
         add(afficherMatrice);
 		
         afficherFsAps = new JButton("Afficher FS et APS");
-        afficherFsAps.setBounds(130, 80, 130, 21);
+        afficherFsAps.setBounds(150, 80, 150, 30);
         add(afficherFsAps);
 		
-		afficherArcOuAretes = new JButton("Afficher les arêtes ou les arcs");
-		afficherArcOuAretes.setBounds(260, 80, 130, 21);
+		afficherArcOuAretes = new JButton("Afficher les arcs");
+		afficherArcOuAretes.setBounds(300, 80, 150, 30);
 		add(afficherArcOuAretes);
 		
 		Rang = new JButton("Le rang du graphe");
-		Rang.setBounds(260, 150, 130, 21);
+		Rang.setBounds(300, 150, 150, 30);
 		add(Rang);
-		
-		Distance = new JButton("Distance");
-		Distance.setBounds(130, 150, 130, 21);
-		add(Distance);
 
 		Tarjan = new JButton("Tarjan");
-		Tarjan.setBounds(10, 150, 130, 21);
+		Tarjan.setBounds(10, 150, 150, 30);
 		add(Tarjan);
 		
-		
-		Djikstra = new JButton("Djikstra");
-		Djikstra.setBounds(390, 150, 130, 21);
-		add(Djikstra);
-		
-		ordonnancement = new JButton("Ordonnancement");
-		ordonnancement.setBounds(390, 80, 130, 21);
-		add(ordonnancement);
+		Distance = new JButton("Distance");
+		Distance.setBounds(150, 150, 150, 30);
+		add(Distance);
 		
 		combo = new JComboBox<String>();
         combo.addItem("Veuillez choisir");
         combo.addItem("Importer la matrice d'adjascence");
         combo.addItem("Importer FS et APS");
         combo.addItem("Importer les arcs");
-        combo.setBounds(160, 10, 184, 21);
+        combo.setBounds(150, 10, 150, 30);
         combo.setEditable(false);
         add(combo);
         
         BtSais = new JButton("Choisir");
-        BtSais.setBackground(Color.blue);
-        BtSais.setBounds(390, 10, 130, 21);
-        BtSais.setOpaque(true);
-        BtSais.setBackground(new Color(100,128,128));
+        BtSais.setBounds(300, 10, 150, 30);
         BtSais.setEnabled(false);
         add(BtSais);
+		
+		
+		Djikstra = new JButton("Djikstra");
+		Djikstra.setBounds(450, 150, 150, 30);
+		add(Djikstra);
+		
+		ordonnancement = new JButton("Ordonnancement");
+		ordonnancement.setBounds(450, 80, 150, 30);
+		add(ordonnancement);
         //JScrollPane js = new JScrollPane(resultat, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         //page_oriente_non_value.add(js);
         resultat = new JTextArea(10, 10);

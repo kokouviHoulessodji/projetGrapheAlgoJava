@@ -4,8 +4,10 @@ import java.util.Scanner;
 
 import javax.swing.JTextArea;
 
-public class GrapheNonOriente extends Graphe {
+import vue.DessinGraphe;
 
+public class GrapheNonOriente extends Graphe {
+	private DessinGraphe dessin;
 	public GrapheNonOriente(boolean oriente) {
 		super(oriente);
 	}
@@ -126,6 +128,9 @@ public class GrapheNonOriente extends Graphe {
         data.append("\n");
         data.append("Le nombre chromatique du graphe est égal à "+nChr+"\n");
         textArea.setText(data.toString());
+	}
+	public void dessinerGraphe() {
+		dessin = new DessinGraphe();
 	}
 	
 

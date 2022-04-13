@@ -3,37 +3,35 @@ package vue;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
 
-import Graphe.*;
 
 public class Fenetre extends JFrame implements Runnable {
 	/**
@@ -53,7 +51,6 @@ public class Fenetre extends JFrame implements Runnable {
 	//private JPanel page_non_oriente_non_value, page_non_oriente_value, page_arbre, page_saisie;
 	private JLabel accueil, oriente_non_value, oriente_value;
 	private JLabel non_oriente_non_value, non_oriente_value, arbre;
-	private String grapheCourant;
 	
 
 	@Override
@@ -170,9 +167,8 @@ public class Fenetre extends JFrame implements Runnable {
         page_accueil.add(presentation, BorderLayout.NORTH);
         BufferedImage myPicture = null;
         try {
-			myPicture = ImageIO.read(new File("/Users/simpleprosper/eclipse-workspace/ProjetGrapheAlgo/graphePhotoC.png"));
+			myPicture = ImageIO.read(new File("graphePhotoC.png"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
@@ -183,7 +179,47 @@ public class Fenetre extends JFrame implements Runnable {
         JButton Aide = new JButton("Manuel d'utilisation");
         Aide.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try { Desktop.getDesktop().browse(new URL("https://github.com/kokouviHoulessodji/projetGrapheAlgoJava").toURI()); } catch (Exception e1) {} 
+				//try { Desktop.getDesktop().browse(new URL("https://github.com/kokouviHoulessodji/projetGrapheAlgoJava").toURI()); } catch (Exception e1) {}
+				StringBuilder data=new StringBuilder();
+				try {
+					FileReader file1=new FileReader("manuel.txt");
+					BufferedReader in = new BufferedReader(file1);
+					String line;
+					line = in.readLine();
+					while(line != null)
+					{
+						data.append(line+"\n");
+						line = in.readLine();
+					}
+					in.close();	
+					file1.close();
+					JFrame frame1 = new JFrame();
+					frame1.setLayout(new FlowLayout());
+					JTextArea textArea = new JTextArea();
+					
+					//frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame1.setBackground(Color.white);
+					frame1.setTitle("Manuel d'utilisation".toUpperCase());
+					frame1.setSize(new Dimension(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height));
+					JButton btnNewButton_1 = new JButton("Retour");
+					btnNewButton_1.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							frame1.setVisible(false);
+						}
+					});
+					frame1.getContentPane().add(btnNewButton_1);
+					frame1.getContentPane().add(textArea);
+					textArea.setText(data.toString());
+					textArea.setEditable(false);
+					JScrollPane js = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			        frame1.add(js);
+					frame1.setVisible(true);
+				}catch(Exception ex)
+				{
+					 System.out.println ("Fichier introuvable."+ex.getMessage());
+				}
+				
+				
 			}
 		});
 		page_accueil.add(Aide, BorderLayout.SOUTH);
@@ -271,7 +307,6 @@ public class Fenetre extends JFrame implements Runnable {
                 non_oriente_non_value.setBackground(new Color(128,128,128));
                 non_oriente_value.setBackground(new Color(128,128,128));
                 arbre.setBackground(new Color(128,128,128));
-                grapheCourant = "onv";
                 pile.show(contenant, "onv");
                 
             }
@@ -289,7 +324,6 @@ public class Fenetre extends JFrame implements Runnable {
                 oriente_non_value.setBackground(new Color(128,128,128));
                 non_oriente_value.setBackground(new Color(128,128,128));
                 arbre.setBackground(new Color(128,128,128));
-                grapheCourant = "ov";
                 pile.show(contenant, "ov");
                 
             }
@@ -305,7 +339,6 @@ public class Fenetre extends JFrame implements Runnable {
                  oriente_non_value.setBackground(new Color(128,128,128));
                  non_oriente_value.setBackground(new Color(128,128,128));
                  arbre.setBackground(new Color(128,128,128));
-                 grapheCourant = "nonv";
                  pile.show(contenant, "nonv");
                 
             }
@@ -322,7 +355,6 @@ public class Fenetre extends JFrame implements Runnable {
                  oriente_non_value.setBackground(new Color(128,128,128));
                  non_oriente_value.setBackground(new Color(129,20,83));
                  arbre.setBackground(new Color(128,128,128));
-                 grapheCourant = "nov";
                  pile.show(contenant, "nov");
                 
             }
@@ -338,7 +370,6 @@ public class Fenetre extends JFrame implements Runnable {
                  oriente_non_value.setBackground(new Color(128,128,128));
                  non_oriente_value.setBackground(new Color(128,128,128));
                  arbre.setBackground(new Color(129,20,83));
-                 grapheCourant = "abr";
                  pile.show(contenant, "abr");
                 
             }

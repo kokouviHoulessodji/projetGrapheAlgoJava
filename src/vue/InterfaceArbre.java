@@ -29,42 +29,42 @@ public class InterfaceArbre extends JPanel {
 		this.setBackground(Color.white);
         this.setLayout(null);
 		JLabel sais = new JLabel("Importer le graphe");
-        sais.setBounds(10, 10, 160, 21);
+        sais.setBounds(10, 10, 150, 30);
         add(sais);
 		erreur = new JLabel("Erreur");
 		erreur.setBounds(340, 30, 130, 21);
 		erreur.setVisible(false);
 		add(erreur);
 		afficherMatrice = new JButton("Afficher matrice");
-        afficherMatrice.setBounds(10, 80, 130, 21);
+        afficherMatrice.setBounds(10, 80, 150, 30);
         add(afficherMatrice);
 		
         afficherFsAps = new JButton("Afficher FS et APS");
-        afficherFsAps.setBounds(130, 80, 130, 21);
+        afficherFsAps.setBounds(150, 80, 150, 30);
         add(afficherFsAps);
 		
-		afficherArcOuAretes = new JButton("Afficher les arêtes ou les arcs");
-		afficherArcOuAretes.setBounds(260, 80, 130, 21);
+		afficherArcOuAretes = new JButton("Afficher les arêtes");
+		afficherArcOuAretes.setBounds(300, 80, 150, 30);
 		add(afficherArcOuAretes);
 		
 		pruferDecodage = new JButton("Décodage de prufer");
-		pruferDecodage.setBounds(390, 80, 130, 21);
+		pruferDecodage.setBounds(450, 80, 150, 30);
 		add(pruferDecodage);
 		
 		Rang = new JButton("Le rang du graphe");
-		Rang.setBounds(260, 150, 130, 21);
+		Rang.setBounds(300, 150, 150, 30);
 		add(Rang);
 
 		coloration = new JButton("Coloration");
-		coloration.setBounds(10, 150, 130, 21);
+		coloration.setBounds(10, 150, 150, 30);
 		add(coloration);
 		
 		Distance = new JButton("Distance");
-		Distance.setBounds(130, 150, 130, 21);
+		Distance.setBounds(150, 150, 150, 30);
 		add(Distance);
 		
 		pruferCodage = new JButton("Codage de prufer");
-		pruferCodage.setBounds(390, 150, 130, 21);
+		pruferCodage.setBounds(450, 150, 150, 30);
 		add(pruferCodage);
 		
 		combo = new JComboBox<String>();
@@ -72,15 +72,12 @@ public class InterfaceArbre extends JPanel {
         combo.addItem("Importer la matrice d'adjascence");
         combo.addItem("Importer FS et APS");
         combo.addItem("Importer les arêtes");
-        combo.setBounds(160, 10, 184, 21);
+        combo.setBounds(150, 10, 150, 30);
         combo.setEditable(false);
         add(combo);
         
         BtSais = new JButton("Choisir");
-        BtSais.setBackground(Color.blue);
-        BtSais.setBounds(390, 10, 130, 21);
-        BtSais.setOpaque(true);
-        BtSais.setBackground(new Color(100,128,128));
+        BtSais.setBounds(300, 10, 150, 30);
         BtSais.setEnabled(false);
         add(BtSais);
         
