@@ -1,14 +1,10 @@
 package Graphe;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
 
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 public class Graphe {
@@ -161,6 +157,7 @@ public class Graphe {
             matriceToAretes();
         }
     }
+    
     /*
      * Menu qui permet de saisir le graphe en fonction du choix de l'utilisateur
      */
@@ -559,7 +556,7 @@ public class Graphe {
 				System.out.print("Vous devez taper une valeur numérique:");
 			}
 		}
-        d_nb_sommet = n;
+        setD_nb_sommet(n);
         
         d_matrice_d_adjascence = new int[n+1][n+1];
         for (int i = 1; i <= n ; ++i) {
@@ -593,8 +590,8 @@ public class Graphe {
 			}
 		}
         d_matrice_d_adjascence[0][1] = 2*m;
-        d_nb_aretes = m;
-        aretes = new Arete[m];
+        setD_nb_aretes(m);
+        setAretes(new Arete[m]);
 
         System.out.println("Saisissez les " + m + " arêtes");
         for (int i = 0; i < m; i++)
@@ -642,7 +639,7 @@ public class Graphe {
     				System.out.print("Vous devez taper une valeur numérique:");
     			}
     		}
-            aretes[i] = new Arete(s, t);
+            getAretes()[i] = new Arete(new Sommet(s), new Sommet(t));
             d_matrice_d_adjascence[s][t] = 1;
             d_matrice_d_adjascence[t][s] = 1;
             /*
@@ -684,7 +681,7 @@ public class Graphe {
 				System.out.print("Vous devez taper une valeur numérique:");
 			}
 		}
-        d_nb_sommet = n;
+        setD_nb_sommet(n);
         d_matrice_d_adjascence = new int[n+1][n+1];
         for (int i = 1; i <= n ; ++i) {
             d_matrice_d_adjascence[i] = new int[n+1];
@@ -717,8 +714,8 @@ public class Graphe {
 			}
 		}
         d_matrice_d_adjascence[0][1] = m;
-        d_nb_aretes = m;
-        aretes = new Arete[m];
+        setD_nb_aretes(m);
+        setAretes(new Arete[m]);
 
         System.out.printf("Saisissez les " + m + " arcs");
         for (int i = 0; i < m; i++)
@@ -765,7 +762,7 @@ public class Graphe {
     				System.out.print("Vous devez taper une valeur numérique:");
     			}
     		}
-            aretes[i] = new Arete(s, t);
+            getAretes()[i] = new Arete(new Sommet(s), new Sommet(t));
             d_matrice_d_adjascence[s][t] = 1;
             /*
             cout << "Poids de l'arete : ";
@@ -780,8 +777,8 @@ public class Graphe {
     public void afficheAretes()//TESTED
     {
     	System.out.println("Aretes/Arcs : ");
-    	for(int i=0; i<d_nb_aretes; ++i)
-    		System.out.println("[ " + aretes[i].getD_sommet_depart() + " " + aretes[i].getD_sommet_arrive() + " ]");
+    	for(int i=0; i<getD_nb_aretes(); ++i)
+    		System.out.println("[ " + getAretes()[i].getD_sommet_depart() + " " + getAretes()[i].getD_sommet_arrive() + " ]");
     }
     public void distance(int r, int[] dist)//TESTED
     {
@@ -952,34 +949,35 @@ public class Graphe {
     public void matriceToAretes()//TESTED
     {
         int m = d_matrice_d_adjascence[0][1], n = d_matrice_d_adjascence[0][0];
-        aretes = new Arete[m];
+        setAretes(new Arete[m]);
         int k = 0;
         for (int i = 1; i <= n ; ++i) {
             for (int j = 1; j <= n ; ++j) {
                 if(d_matrice_d_adjascence[i][j] == 1)
                 {
-                    aretes[k] = new Arete(i, j);
+                    getAretes()[k] = new Arete(new Sommet(i), new Sommet(j));
                     k++;
                 }
             }
         }
     }
+    
     /*
      * Convertir les arêtes en matrice d'adjascence
      */
     public void aretesToMatrice()//TESTED
     {
-        d_matrice_d_adjascence = new int[d_nb_sommet+1][d_nb_sommet+1];
-        d_matrice_d_adjascence[0][0] = d_nb_sommet;
+        d_matrice_d_adjascence = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
+        d_matrice_d_adjascence[0][0] = getD_nb_sommet();
         d_matrice_d_adjascence[0][1] = 0;
         
-        for (int i = 1; i <= d_nb_sommet ; ++i) {
-            for (int j = 1; j <= d_nb_sommet ; ++j) {
+        for (int i = 1; i <= getD_nb_sommet() ; ++i) {
+            for (int j = 1; j <= getD_nb_sommet() ; ++j) {
                 d_matrice_d_adjascence[i][j] = 0;
             }
         }
-        for (int i = 0; i < d_nb_aretes ; ++i) {
-            d_matrice_d_adjascence[aretes[i].getD_sommet_depart()][aretes[i].getD_sommet_arrive()] = 1;
+        for (int i = 0; i < getD_nb_aretes() ; ++i) {
+            d_matrice_d_adjascence[getAretes()[i].getD_sommet_depart().getD_numero()][getAretes()[i].getD_sommet_arrive().getD_numero()] = 1;
             d_matrice_d_adjascence[0][1]++;
         }
     }
@@ -989,15 +987,15 @@ public class Graphe {
     public void trier()//TESTED
     {
         int p;
-        int m = d_nb_aretes;
+        int m = getD_nb_aretes();
         
         for (int i = 0; i < m - 1; i++) {
             for (int j = i + 1; j < m; j++) {
-                if ((aretes[j].getD_poids() < aretes[i].getD_poids()) || (aretes[j].getD_poids() == aretes[i].getD_poids() && aretes[j].getD_sommet_depart() < aretes[i].getD_sommet_arrive()) ||
-                    (aretes[j].getD_poids() == aretes[i].getD_poids() && aretes[j].getD_sommet_depart() < aretes[i].getD_sommet_arrive())) {
-                    p = aretes[j].getD_poids();
-                    aretes[j].setD_poids(aretes[i].getD_poids());;
-                    aretes[i].setD_poids(p);;
+                if ((getAretes()[j].getD_poids() < getAretes()[i].getD_poids()) || (getAretes()[j].getD_poids() == getAretes()[i].getD_poids() && getAretes()[j].getD_sommet_depart().getD_numero() < getAretes()[i].getD_sommet_arrive().getD_numero()) ||
+                    (getAretes()[j].getD_poids() == getAretes()[i].getD_poids() && getAretes()[j].getD_sommet_depart().getD_numero() < getAretes()[i].getD_sommet_arrive().getD_numero())) {
+                    p = getAretes()[j].getD_poids();
+                    getAretes()[j].setD_poids(getAretes()[i].getD_poids());;
+                    getAretes()[i].setD_poids(p);;
                 }
             }
         }
@@ -1055,19 +1053,19 @@ public class Graphe {
 			BufferedReader in = new BufferedReader(file1);
 			String line;
 			line = in.readLine();
-			d_nb_sommet = Integer.parseInt(line.split(" ")[0]);
-			d_nb_aretes = Integer.parseInt(line.split(" ")[1]);
+			setD_nb_sommet(Integer.parseInt(line.split(" ")[0]));
+			setD_nb_aretes(Integer.parseInt(line.split(" ")[1]));
 			line = in.readLine();
-			d_matrice_d_adjascence = new int[d_nb_sommet+1][d_nb_sommet+1];
-			d_matrice_d_adjascence[0][0] = d_nb_sommet;
-			d_matrice_d_adjascence[0][1] = d_nb_aretes;
-			for(int i=1; i<=d_nb_sommet; i++)
-				d_matrice_d_adjascence[i] = new int[d_nb_sommet+1];
+			d_matrice_d_adjascence = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
+			d_matrice_d_adjascence[0][0] = getD_nb_sommet();
+			d_matrice_d_adjascence[0][1] = getD_nb_aretes();
+			for(int i=1; i<=getD_nb_sommet(); i++)
+				d_matrice_d_adjascence[i] = new int[getD_nb_sommet()+1];
 			int i = 1;
 			while(line != null)
 			{
 				String []tab = line.split(" ");
-				for(int j=0; j<=d_nb_sommet; j++)
+				for(int j=0; j<=getD_nb_sommet(); j++)
 					d_matrice_d_adjascence[i][j] = Integer.parseInt(tab[j]);
 				i++;
 				line = in.readLine();
@@ -1095,15 +1093,15 @@ public class Graphe {
 			BufferedReader in = new BufferedReader(file1);
 			String line;
 			line = in.readLine();
-			d_nb_sommet = Integer.parseInt(line);
+			setD_nb_sommet(Integer.parseInt(line));
 			line = in.readLine();
-			d_nb_aretes = Integer.parseInt(line);
-			aretes = new Arete[d_nb_aretes];
-			d_matrice_d_adjascence = new int[d_nb_sommet+1][d_nb_sommet+1];
-			d_matrice_d_adjascence[0][0] = d_nb_sommet;
-			d_matrice_d_adjascence[0][1] = 2*d_nb_aretes;
-			for(int i=1; i<=d_nb_sommet; i++)
-				for(int j=1; j<=d_nb_sommet; j++)
+			setD_nb_aretes(Integer.parseInt(line));
+			setAretes(new Arete[getD_nb_aretes()]);
+			d_matrice_d_adjascence = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
+			d_matrice_d_adjascence[0][0] = getD_nb_sommet();
+			d_matrice_d_adjascence[0][1] = 2*getD_nb_aretes();
+			for(int i=1; i<=getD_nb_sommet(); i++)
+				for(int j=1; j<=getD_nb_sommet(); j++)
 					d_matrice_d_adjascence[i][j] = 0;
 			int k = 0;
 			line = in.readLine();
@@ -1113,7 +1111,7 @@ public class Graphe {
 				int s = Integer.parseInt(tab[0]);
 				int t = Integer.parseInt(tab[1]);
 				int p = Integer.parseInt(tab[2]);
-				aretes[k] = new Arete(s, t, p);
+				getAretes()[k] = new Arete(new Sommet(s), new Sommet(t), p);
 				d_matrice_d_adjascence[s][t] = 1;
 				d_matrice_d_adjascence[t][s] = 1;
 				k++;
@@ -1137,10 +1135,16 @@ public class Graphe {
 			BufferedReader in = new BufferedReader(file1);
 			String line;
 			line = in.readLine();
-			d_nb_sommet = Integer.parseInt(line);
+			setD_nb_sommet(Integer.parseInt(line));
 			line = in.readLine();
-			d_nb_aretes = Integer.parseInt(line);
-			aretes = new Arete[d_nb_aretes];
+			setD_nb_aretes(Integer.parseInt(line));
+			setAretes(new Arete[getD_nb_aretes()]);
+			d_matrice_d_adjascence = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
+			d_matrice_d_adjascence[0][0] = getD_nb_sommet();
+			d_matrice_d_adjascence[0][1] = getD_nb_aretes();
+			for(int i=1; i<=getD_nb_sommet(); i++)
+				for(int j=1; j<=getD_nb_sommet(); j++)
+					d_matrice_d_adjascence[i][j] = 0;
 			int k = 0;
 			line = in.readLine();
 			while(line != null)
@@ -1149,13 +1153,13 @@ public class Graphe {
 				int s = Integer.parseInt(tab[0]);
 				int t = Integer.parseInt(tab[1]);
 				int p = Integer.parseInt(tab[2]);
-				aretes[k] = new Arete(s, t, p);
+				getAretes()[k] = new Arete(new Sommet(s), new Sommet(t), p);
+				d_matrice_d_adjascence[s][t] = 1;
 				k++;
 				line = in.readLine();
 			}
 			in.close();	
 			file1.close();
-			aretesToMatrice();
         	matriceToFsAps();
 		}
 		catch(Exception e)
@@ -1187,8 +1191,8 @@ public class Graphe {
 			for(int j=1; j<=n; j++)
 				d_aps[j] = Integer.parseInt(tab2[j]);
 			
-			d_nb_sommet = n;
-			d_nb_aretes = m - n;
+			setD_nb_sommet(n);
+			setD_nb_aretes(m - n);
 			in.close();	
 			file1.close();
 		}
@@ -1241,7 +1245,7 @@ public class Graphe {
 		{
 			nomFichier=file.getSelectedFile().getAbsolutePath();
 		}
-		chargerAretesFromFichier(nomFichier);
+		chargerArcsFromFichier(nomFichier);
     }
     public void afficheMatricetext(JTextArea textArea)
 	{	
@@ -1280,25 +1284,45 @@ public class Graphe {
 	{	
 		StringBuilder data=new StringBuilder();
 		data.append(">>>>>>ARETES ou ARCS<<<<<<\n");
-		data.append("Nombre d'arêtes ou d'arcs = "+d_nb_aretes+"\n");
-		  for(int i=0;i<d_nb_aretes;i++)
+		data.append("Nombre d'arêtes ou d'arcs = "+getD_nb_aretes()+"\n");
+		  for(int i=0;i<getD_nb_aretes();i++)
 		  {
-			  data.append("[ "+aretes[i].getD_sommet_depart()+" "+aretes[i].getD_sommet_arrive()+" ]\n");
+			  data.append("[ "+getAretes()[i].getD_sommet_depart().getD_numero()+" "+getAretes()[i].getD_sommet_arrive().getD_numero()+" ]\n");
 		  }
 		textArea.setText(data.toString());
 	}
     public boolean estUnArbre() {
-    	for(int i=1; i<=d_nb_sommet; i++) {
+    	for(int i=1; i<=getD_nb_sommet(); i++) {
     		int k = d_aps[i];
     		int n = 0;
     		while(k<=d_fs[0] && d_fs[k] != 0) {
     			n++;
     			k++;
     		}
-    		if( n == 1 && d_nb_aretes == d_nb_sommet-1)
+    		if( n == 1 && getD_nb_aretes() == getD_nb_sommet()-1)
     			return true;
     	}
     	return false;
     }
-
+	public int getD_nb_sommet() {
+		return d_nb_sommet;
+	}
+	public void setD_nb_sommet(int d_nb_sommet) {
+		this.d_nb_sommet = d_nb_sommet;
+	}
+	public Arete[] getAretes() {
+		return aretes;
+	}
+	public void setAretes(Arete[] aretes) {
+		this.aretes = aretes;
+	}
+	public int getD_nb_aretes() {
+		return d_nb_aretes;
+	}
+	public void setD_nb_aretes(int d_nb_aretes) {
+		this.d_nb_aretes = d_nb_aretes;
+	}
+	public Arete getAretePos(int pos) {
+		return aretes[pos];
+	}
 }

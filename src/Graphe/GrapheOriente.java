@@ -406,7 +406,72 @@ public class GrapheOriente extends Graphe{
         data.append("]\n");
 		textArea.setText(data.toString());
 	}
-	
-
+	public void ajoutNouveauSommet(String[] succ, String[] pred) {
+		int[][] mat = new int[d_nb_sommet + 2][d_nb_sommet + 2];
+		mat[0][0] = d_nb_sommet + 1;
+		mat[0][1] = d_matrice_d_adjascence[0][1];
+		for(int i=1; i<=d_nb_sommet; i++)
+			for(int j=1; j<=d_nb_sommet; j++)
+				mat[i][j] = d_matrice_d_adjascence[i][j];
+		for(int i=1; i<=d_nb_sommet+1; i++)
+			mat[d_nb_sommet+1][i] = 0;
+		for(int i=1; i<=d_nb_sommet+1; i++)
+			mat[i][d_nb_sommet+1] = 0;
+		for(int i=1; i<succ.length; i++) {
+			mat[d_nb_sommet+1][Integer.parseInt(succ[i])] = 1;
+			mat[0][1]++;
+			setD_nb_aretes(getD_nb_aretes() + 1);
+		}
+		for(int i=1; i<pred.length; i++) {
+			mat[Integer.parseInt(pred[i])][d_nb_sommet+1] = 1;
+			mat[0][1]++;
+			setD_nb_aretes(getD_nb_aretes() + 1);
+		}
+		d_nb_sommet++;
+		d_matrice_d_adjascence = mat;
+		matriceToAretes();
+		matriceToFsAps();
+	}
+	public void supprimerSommet(int sommet) {
+		demi_degre_ext();
+		demi_degre_int();
+		int[][] mat = new int[d_nb_sommet][d_nb_sommet];
+		mat[0][0] = d_nb_sommet-1;
+		mat[0][1] = d_matrice_d_adjascence[0][1] - ddi[sommet] - dde[sommet];
+		setD_nb_aretes(mat[0][1]);
+		int newTabRow = 1;
+		int newTabCol = 1;
+		for(int i=1; i<=d_nb_sommet; i++) {
+			if(i != sommet) {
+				for(int j=1; j<=d_nb_sommet; j++) {
+					if(j != sommet) {
+						mat[newTabRow][newTabCol] = d_matrice_d_adjascence[i][j];
+						++newTabCol;
+					}
+					
+				}
+				++newTabRow;
+				newTabCol = 1;
+			}
+		}
+		d_nb_sommet--;
+		d_matrice_d_adjascence = mat;
+		matriceToAretes();
+		matriceToFsAps();
+	}
+	public void ajoutNouvelArc(int sommet1, int sommet2) {
+		d_matrice_d_adjascence[0][1]++;
+		setD_nb_aretes(getD_nb_aretes() + 1);
+		d_matrice_d_adjascence[sommet1][sommet2] = 1;
+		matriceToAretes();
+		matriceToFsAps();
+	}
+	public void supprimerArc(int arc) {
+		d_matrice_d_adjascence[getAretePos(arc).getD_sommet_depart().getD_numero()][getAretePos(arc).getD_sommet_arrive().getD_numero()] = 0;
+		d_matrice_d_adjascence[0][1]--;
+		setD_nb_aretes(getD_nb_aretes() - 1);
+		matriceToAretes();
+		matriceToFsAps();
+	}
 
 }

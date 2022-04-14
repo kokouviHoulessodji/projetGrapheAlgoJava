@@ -2,16 +2,19 @@ package vue;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import Graphe.GrapheOriente;
 
@@ -23,7 +26,7 @@ public class InterfaceOriente extends JPanel {
 	private GrapheOriente graphe;
 	private JLabel erreur;
 	private JTextArea resultat;
-	private JButton afficherMatrice, afficherFsAps, afficherArcOuAretes, Rang, Tarjan, Distance;
+	private JButton afficherMatrice, afficherFsAps, afficherArcOuAretes, Rang, Tarjan, Distance, ajoutSommet, supSommet, ajoutArc, supArc;
 	JComboBox<String> combo;
 	JButton BtSais;
 
@@ -48,7 +51,7 @@ public class InterfaceOriente extends JPanel {
         add(afficherFsAps);
 		
 		afficherArcOuAretes = new JButton("Afficher les arcs");
-		afficherArcOuAretes.setBounds(300, 80, 150, 30);
+		afficherArcOuAretes.setBounds(300, 80	, 150, 30);
 		add(afficherArcOuAretes);
 		
 		Rang = new JButton("Le rang du graphe");
@@ -62,6 +65,22 @@ public class InterfaceOriente extends JPanel {
 		Distance = new JButton("Distance");
 		Distance.setBounds(150, 150, 150, 30);
 		add(Distance);
+		
+		ajoutSommet = new JButton("Ajouter un sommet");
+		ajoutSommet.setBounds(10, 115, 150, 30);
+		add(ajoutSommet);
+		
+		supSommet = new JButton("Supprimer un sommet");
+		supSommet.setBounds(150, 115, 150, 30);
+		add(supSommet);
+
+		ajoutArc = new JButton("Ajouter un arc");
+		ajoutArc.setBounds(300, 115, 150, 30);
+		add(ajoutArc);
+		
+		supArc = new JButton("Supprimer un arc");
+		supArc.setBounds(450, 115, 150, 30);
+		add(supArc);
 		
 		combo = new JComboBox<String>();
         combo.addItem("Veuillez choisir");
@@ -209,6 +228,276 @@ public class InterfaceOriente extends JPanel {
 				else
 				{
 					graphe.afficheTarjanText(resultat);
+				}
+			}
+		});
+		ajoutSommet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(graphe == null)
+					resultat.setText("Importer d'abord un graphe avant.");
+				else
+				{
+					JFrame frame1 = new JFrame();
+					frame1.setLayout(new GridLayout(3, 4));
+					frame1.setSize(getPreferredSize());
+					JLabel pred = new JLabel("Prédécesseur");
+					frame1.add(pred);
+					JComboBox<String> CheckPred = new JComboBox<String>();
+					CheckPred.addItem("choisir");
+					for(int i=1; i<=graphe.getD_nb_sommet();i++) {
+						CheckPred.addItem("Sommet "+i);
+					}
+					
+					frame1.add(CheckPred);
+					JButton addPred = new JButton("Ajouter");
+					addPred.setSize(new Dimension(150, 30));
+					addPred.setEnabled(false);
+					frame1.add(addPred);
+					JTextField PredT = new JTextField();
+					PredT.setSize(new Dimension(150, 30));
+					PredT.setEditable(false);
+					PredT.setText("");
+					frame1.add(PredT);
+					
+					CheckPred.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(CheckPred.getSelectedIndex() == 0)
+					        	addPred.setEnabled(false);
+					        else
+					        	addPred.setEnabled(true);
+						}
+					});
+					
+					JLabel succ = new JLabel("Successeur");
+					frame1.add(succ);
+					JComboBox<String> CheckSucc = new JComboBox<String>();
+					CheckSucc.addItem("choisir");
+					for(int i=1; i<=graphe.getD_nb_sommet();i++) {
+						CheckSucc.addItem("Sommet "+i);
+					}
+					frame1.add(CheckSucc);
+					JButton addSucc = new JButton("Ajouter");
+					addSucc.setSize(new Dimension(150, 30));
+					addSucc.setEnabled(false);
+					frame1.add(addSucc);
+					JTextField SuccT = new JTextField();
+					SuccT.setSize(new Dimension(150, 30));
+					SuccT.setEditable(false);
+					frame1.add(SuccT);
+					
+					CheckSucc.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(CheckSucc.getSelectedIndex() == 0)
+					        	addSucc.setEnabled(false);
+					        else
+					        	addSucc.setEnabled(true);
+						}
+					});
+					JButton Add = new JButton("Ajouter");
+					addPred.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(PredT.getText() == "")
+								PredT.setText(""+CheckPred.getSelectedIndex());
+							else {
+								String[] pred = PredT.getText().split(" ");
+								int i=0;
+								while(i<pred.length && !(String.valueOf(CheckPred.getSelectedIndex()).equals(pred[i])))
+									i++;
+								if(i == pred.length)
+									PredT.setText(PredT.getText()+" "+CheckPred.getSelectedIndex());
+							}
+							if(PredT.getText() == "" && SuccT.getText() == "")
+								Add.setEnabled(false);
+							else
+								Add.setEnabled(true);
+						}
+					});
+					addSucc.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(SuccT.getText() == "")
+								SuccT.setText(""+CheckSucc.getSelectedIndex());
+							else {
+								String[] succ = SuccT.getText().split(" ");
+								int i=0;
+								while(i<succ.length && !(String.valueOf(CheckSucc.getSelectedIndex()).equals(succ[i])))
+									i++;
+								if(i == succ.length)
+									SuccT.setText(SuccT.getText()+" "+CheckSucc.getSelectedIndex());
+							}
+							if(PredT.getText() == "" && SuccT.getText() == "")
+								Add.setEnabled(false);
+							else
+								Add.setEnabled(true);
+						}
+					});
+					frame1.add(new JLabel());
+					
+					Add.setSize(new Dimension(150, 30));
+					Add.setEnabled(false);
+					Add.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							String[] succ = SuccT.getText().split(" ");
+							String[] pred = PredT.getText().split(" ");
+							graphe.ajoutNouveauSommet(succ, pred);
+						}
+					});
+					frame1.add(Add);
+					frame1.add(new JLabel());
+					
+					frame1.setVisible(true);
+					//graphe.ajoutSommet();
+				}
+			}
+		});
+		supSommet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(graphe == null)
+					resultat.setText("Importer d'abord un graphe avant.");
+				else
+				{
+					JFrame frame1 = new JFrame();
+					frame1.setLayout(new GridLayout(1, 3));
+					frame1.setSize(getPreferredSize());
+					JLabel pred = new JLabel("Sommet à supprimer");
+					frame1.add(pred);
+					JComboBox<String> CheckPred = new JComboBox<String>();
+					CheckPred.addItem("choisir");
+					for(int i=1; i<=graphe.getD_nb_sommet();i++) {
+						CheckPred.addItem("Sommet "+i);
+					}
+					
+					frame1.add(CheckPred);
+					JButton addPred = new JButton("Supprimer");
+					addPred.setSize(new Dimension(150, 30));
+					addPred.setEnabled(false);
+					frame1.add(addPred);
+					
+					CheckPred.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(CheckPred.getSelectedIndex() == 0)
+					        	addPred.setEnabled(false);
+					        else
+					        	addPred.setEnabled(true);
+						}
+					});
+					addPred.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							graphe.supprimerSommet(CheckPred.getSelectedIndex());
+						}
+					});
+					
+					frame1.setVisible(true);
+				}
+			}
+		});
+		ajoutArc.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(graphe == null)
+					resultat.setText("Importer d'abord un graphe avant.");
+				else
+				{
+					JFrame frame1 = new JFrame();
+					frame1.setLayout(new GridLayout(3, 2));
+					frame1.setSize(getPreferredSize());
+					JLabel pred = new JLabel("Extrémité 1");
+					frame1.add(pred);
+					JComboBox<String> CheckPred = new JComboBox<String>();
+					CheckPred.addItem("choisir");
+					for(int i=1; i<=graphe.getD_nb_sommet();i++) {
+						CheckPred.addItem("Sommet "+i);
+					}
+					
+					frame1.add(CheckPred);
+					
+					JButton Add = new JButton("Ajouter");
+					
+					
+					JLabel succ = new JLabel("Extreminté 2");
+					frame1.add(succ);
+					JComboBox<String> CheckSucc = new JComboBox<String>();
+					CheckSucc.addItem("choisir");
+					for(int i=1; i<=graphe.getD_nb_sommet();i++) {
+						CheckSucc.addItem("Sommet "+i);
+					}
+					frame1.add(CheckSucc);
+					
+					CheckPred.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(CheckPred.getSelectedIndex() == 0 || CheckSucc.getSelectedIndex() == 0)
+					        	Add.setEnabled(false);
+					        else
+					        	Add.setEnabled(true);
+						}
+					});
+					CheckSucc.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(CheckPred.getSelectedIndex() == 0 || CheckSucc.getSelectedIndex() == 0)
+					        	Add.setEnabled(false);
+					        else
+					        	Add.setEnabled(true);
+						}
+					});
+					
+					
+					
+					Add.setSize(new Dimension(150, 30));
+					Add.setEnabled(false);
+					Add.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							graphe.ajoutNouvelArc(CheckPred.getSelectedIndex(), CheckSucc.getSelectedIndex());
+							frame1.setVisible(false);
+						}
+					});
+					frame1.add(Add);
+					frame1.add(new JLabel());
+					
+					frame1.setVisible(true);
+					//graphe.ajoutSommet();
+				}
+			}
+		});
+		supArc.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(graphe == null)
+					resultat.setText("Importer d'abord un graphe avant.");
+				else
+				{
+					JFrame frame1 = new JFrame();
+					frame1.setLayout(new GridLayout(2, 2));
+					frame1.setSize(getPreferredSize());
+					JLabel pred = new JLabel("Arc à supprimer");
+					frame1.add(pred);
+					JComboBox<String> CheckPred = new JComboBox<String>();
+					CheckPred.addItem("choisir");
+					for(int i=0; i<graphe.getD_nb_aretes();i++) {
+						CheckPred.addItem("Arc [ "+graphe.getAretePos(i).getD_sommet_depart().getD_numero()+" "+graphe.getAretePos(i).getD_sommet_arrive().getD_numero()+" ]");
+					}
+					
+					frame1.add(CheckPred);
+					
+					JButton Add = new JButton("Supprimer");
+					CheckPred.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(CheckPred.getSelectedIndex() == 0)
+					        	Add.setEnabled(false);
+					        else
+					        	Add.setEnabled(true);
+						}
+					});
+					
+					
+					Add.setSize(new Dimension(150, 30));
+					Add.setEnabled(false);
+					Add.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							graphe.supprimerArc(CheckPred.getSelectedIndex()-1);
+						}
+					});
+					frame1.add(Add);
+					frame1.add(new JLabel());
+					
+					frame1.setVisible(true);
+					//graphe.ajoutSommet();
 				}
 			}
 		});

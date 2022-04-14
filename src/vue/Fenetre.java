@@ -48,7 +48,6 @@ public class Fenetre extends JFrame implements Runnable {
 	private InterfaceOrienteValue page_oriente_value;
 	private InterfaceNonOrienteValue page_non_oriente_value;
 	private InterfaceArbre Arbre;
-	//private JPanel page_non_oriente_non_value, page_non_oriente_value, page_arbre, page_saisie;
 	private JLabel accueil, oriente_non_value, oriente_value;
 	private JLabel non_oriente_non_value, non_oriente_value, arbre;
 	

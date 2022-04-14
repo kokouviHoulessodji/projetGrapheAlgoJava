@@ -130,7 +130,90 @@ public class GrapheNonOriente extends Graphe {
         textArea.setText(data.toString());
 	}
 	public void dessinerGraphe() {
-		dessin = new DessinGraphe();
+		dessin = new DessinGraphe(d_nb_sommet, aretes);
+	}
+	public void ajoutNouveauSommet(String[] voisin) {
+		int[][] mat = new int[d_nb_sommet + 2][d_nb_sommet + 2];
+		mat[0][0] = d_nb_sommet + 1;
+		mat[0][1] = d_matrice_d_adjascence[0][1];
+		for(int i=1; i<=d_nb_sommet; i++)
+			for(int j=1; j<=d_nb_sommet; j++)
+				mat[i][j] = d_matrice_d_adjascence[i][j];
+		for(int i=1; i<=d_nb_sommet+1; i++)
+			mat[d_nb_sommet+1][i] = 0;
+		for(int i=1; i<=d_nb_sommet+1; i++)
+			mat[i][d_nb_sommet+1] = 0;
+		for(int i=1; i<voisin.length; i++) {
+			mat[d_nb_sommet+1][Integer.parseInt(voisin[i])] = 1;
+			mat[0][1]++;
+			setD_nb_aretes(getD_nb_aretes() + 1);
+		}
+		for(int i=1; i<voisin.length; i++) {
+			mat[Integer.parseInt(voisin[i])][d_nb_sommet+1] = 1;
+			mat[0][1]++;
+			setD_nb_aretes(getD_nb_aretes() + 1);
+		}
+		d_nb_sommet++;
+		d_matrice_d_adjascence = mat;
+		matriceToAretes();
+		matriceToFsAps();
+	}
+	public void supprimerSommet(int sommet) {
+		demi_degre_ext();
+		demi_degre_int();
+		int[][] mat = new int[d_nb_sommet][d_nb_sommet];
+		mat[0][0] = d_nb_sommet-1;
+		mat[0][1] = d_matrice_d_adjascence[0][1] - ddi[sommet] - dde[sommet];
+		setD_nb_aretes(mat[0][1]);
+		int newTabRow = 1;
+		int newTabCol = 1;
+		for(int i=1; i<=d_nb_sommet; i++) {
+			if(i != sommet) {
+				for(int j=1; j<=d_nb_sommet; j++) {
+					if(j != sommet) {
+						mat[newTabRow][newTabCol] = d_matrice_d_adjascence[i][j];
+						++newTabCol;
+					}
+					
+				}
+				++newTabRow;
+				newTabCol = 1;
+			}
+		}
+		d_nb_sommet--;
+		d_matrice_d_adjascence = mat;
+		matriceToAretes();
+		matriceToFsAps();
+	}
+	public void ajoutNouvelArete(int sommet1, int sommet2) {
+		d_matrice_d_adjascence[0][1] = d_matrice_d_adjascence[0][1] + 2;
+		d_matrice_d_adjascence[sommet1][sommet2] = 1;
+		d_matrice_d_adjascence[sommet2][sommet1] = 1;
+		
+		matriceToFsAps();
+		Arete[] NAretes = new Arete[d_nb_aretes+1];
+		for(int i=0; i<d_nb_aretes; i++) {
+			NAretes[i] = aretes[i];
+		}
+		NAretes[d_nb_aretes] = new Arete(new Sommet(sommet1), new Sommet(sommet2));
+		aretes = NAretes;
+		setD_nb_aretes(getD_nb_aretes() + 1);
+	}
+	public void supprimerArete(int arete) {
+		d_matrice_d_adjascence[getAretePos(arete).getD_sommet_depart().getD_numero()][getAretePos(arete).getD_sommet_arrive().getD_numero()] = 0;
+		d_matrice_d_adjascence[getAretePos(arete).getD_sommet_arrive().getD_numero()][getAretePos(arete).getD_sommet_depart().getD_numero()] = 0;
+		d_matrice_d_adjascence[0][1] = d_matrice_d_adjascence[0][1] - 2;
+		
+		matriceToFsAps();
+		Arete[] NAretes = new Arete[d_nb_aretes-1];
+		for(int i=0; i<arete; i++) {
+			NAretes[i] = aretes[i];
+		}
+		for(int i=arete; i<d_nb_aretes-1; i++) {
+			NAretes[i] = aretes[i+1];
+		}
+		aretes = NAretes;
+		setD_nb_aretes(getD_nb_aretes() - 1);
 	}
 	
 

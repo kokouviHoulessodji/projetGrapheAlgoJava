@@ -26,7 +26,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	public void remplirCout() {
 		int infini = Integer.MAX_VALUE;
 	    int n = d_aps[0];
-	    int m = d_nb_aretes;
+	    int m = getD_nb_aretes();
 	    d_cout = new int[n+1][n+1];
 	    d_cout[0] = new int[2];
 	    d_cout[0][0] = n;
@@ -36,7 +36,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	        for (int j = 1; j <= n ; ++j)
 	            d_cout[i][j] = infini;
 	    for (int i = 0; i < m ; ++i) {
-	        d_cout[aretes[i].getD_sommet_depart()][aretes[i].getD_sommet_arrive()] = aretes[i].getD_poids();
+	        d_cout[getAretes()[i].getD_sommet_depart().getD_numero()][getAretes()[i].getD_sommet_arrive().getD_numero()] = getAretes()[i].getD_poids();
 	    }
 	}
 	public void saisir_cout() //TESTED
@@ -44,7 +44,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 		Scanner in = new Scanner(System.in);
 	    int infini = Integer.MAX_VALUE;
 	    int n = d_aps[0];
-	    int m = d_nb_aretes;
+	    int m = getD_nb_aretes();
 	    d_cout = new int[n+1][n+1];
 	    d_cout[0] = new int[2];
 	    d_cout[0][0] = n;
@@ -55,7 +55,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	            d_cout[i][j] = infini;
 	    for (int i = 0; i < m ; ++i) {
 	        int p;
-	        System.out.print("Saisir le poids de l'arc [ "+aretes[i].getD_sommet_depart()+", "+aretes[i].getD_sommet_arrive()+" ] : ");
+	        System.out.print("Saisir le poids de l'arc [ "+getAretes()[i].getD_sommet_depart()+", "+getAretes()[i].getD_sommet_arrive()+" ] : ");
 	        while(true)
     		{
     			String input = in.nextLine();
@@ -69,8 +69,8 @@ public class GrapheOrienteValue extends GrapheOriente {
     				System.out.print("Vous devez taper une valeur numérique:");
     			}
     		}
-	        aretes[i].setD_poids(p);
-	        d_cout[aretes[i].getD_sommet_depart()][aretes[i].getD_sommet_arrive()] = p;
+	        getAretes()[i].setD_poids(p);
+	        d_cout[getAretes()[i].getD_sommet_depart().getD_numero()][getAretes()[i].getD_sommet_arrive().getD_numero()] = p;
 	    }
 	}
 	public void ordonnancement(int []d, int []fpc, int []appc, int []lc)
@@ -337,7 +337,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	    while (choix != 4)
 	    {
 	        if(choix == 1){
-	            int[][] dist = new int[d_nb_sommet+1][d_nb_sommet+1], pred = new int[d_nb_sommet+1][d_nb_sommet+1];
+	            int[][] dist = new int[getD_nb_sommet()+1][getD_nb_sommet()+1], pred = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
 	            
 	            Dijkstra(dist, pred);
 	            
@@ -361,13 +361,13 @@ public class GrapheOrienteValue extends GrapheOriente {
 	        {
 	        	//ordonnancement
 	        	fs_aps_2_fp_app();
-	        	int[] d = new int [d_nb_sommet + 1];
-	        	for(int i = 1; i <= d_nb_sommet; i++)
+	        	int[] d = new int [getD_nb_sommet() + 1];
+	        	for(int i = 1; i <= getD_nb_sommet(); i++)
 	        		d[i] = 0;
-	        	for(int i = 1; i <= d_nb_sommet; i++) {
-	        		d[aretes[i].getD_sommet_depart()] = aretes[i].getD_poids();
+	        	for(int i = 1; i <= getD_nb_sommet(); i++) {
+	        		d[getAretes()[i].getD_sommet_depart().getD_numero()] = getAretes()[i].getD_poids();
 	        	}
-	        	int[] lc = new int[d_nb_sommet +1]; 
+	        	int[] lc = new int[getD_nb_sommet() +1]; 
 	        	int[] fpc;
 	        	int []appc;
 	        	int n = app[0], m = fp[0];
@@ -377,17 +377,17 @@ public class GrapheOrienteValue extends GrapheOriente {
 	        	ordonnancement(d, fpc, appc, lc);
 	        	System.out.println("------ Résultats ------");
 	        	System.out.print(">>LC : [ ");
-	            for(int i=1;i<=d_nb_sommet;i++){
+	            for(int i=1;i<=getD_nb_sommet();i++){
 	            	System.out.print(lc[i]+" ");
 	            }
 	            System.out.println("]");
 	            System.out.print(">>FPC : [ ");
-	            for(int i=0;i<=d_nb_aretes;i++){
+	            for(int i=0;i<=getD_nb_aretes();i++){
 	            	System.out.print(fpc[i]+" ");
 	            }
 	            System.out.println("]");
 	            System.out.print(">>APPC : [ ");
-	            for(int i=0;i<=d_nb_sommet;i++){
+	            for(int i=0;i<=getD_nb_sommet();i++){
 	            	System.out.print(appc[i]+" ");
 	            }
 	            System.out.println("]");
@@ -410,19 +410,19 @@ public class GrapheOrienteValue extends GrapheOriente {
 			BufferedReader in = new BufferedReader(file1);
 			String line;
 			line = in.readLine();
-			d_nb_sommet = Integer.parseInt(line.split(" ")[0]);
-			d_nb_aretes = Integer.parseInt(line.split(" ")[1]);
+			setD_nb_sommet(Integer.parseInt(line.split(" ")[0]));
+			setD_nb_aretes(Integer.parseInt(line.split(" ")[1]));
 			line = in.readLine();
-			d_matrice_d_adjascence = new int[d_nb_sommet+1][d_nb_sommet+1];
-			d_matrice_d_adjascence[0][0] = d_nb_sommet;
-			d_matrice_d_adjascence[0][1] = d_nb_aretes;
-			for(int i=1; i<=d_nb_sommet; i++)
-				d_matrice_d_adjascence[i] = new int[d_nb_sommet+1];
+			d_matrice_d_adjascence = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
+			d_matrice_d_adjascence[0][0] = getD_nb_sommet();
+			d_matrice_d_adjascence[0][1] = getD_nb_aretes();
+			for(int i=1; i<=getD_nb_sommet(); i++)
+				d_matrice_d_adjascence[i] = new int[getD_nb_sommet()+1];
 			int i = 1;
 			while(line != null)
 			{
 				String []tab = line.split(" ");
-				for(int j=0; j<=d_nb_sommet; j++)
+				for(int j=0; j<=getD_nb_sommet(); j++)
 					d_matrice_d_adjascence[i][j] = Integer.parseInt(tab[j]);
 				i++;
 				line = in.readLine();
@@ -444,17 +444,17 @@ public class GrapheOrienteValue extends GrapheOriente {
 	{	
 		StringBuilder data=new StringBuilder();
 		data.append(">>>>>>ARCS<<<<<<\n");
-		data.append("Nombre d'arcs = "+d_nb_aretes+"\n");
-		  for(int i=0;i<d_nb_aretes;i++)
+		data.append("Nombre d'arcs = "+getD_nb_aretes()+"\n");
+		  for(int i=0;i<getD_nb_aretes();i++)
 		  {
-			  data.append("Arc n "+(i+1)+" : [ "+aretes[i].getD_sommet_depart()+" "+aretes[i].getD_sommet_arrive()+" ] - coût : "+aretes[i].getD_poids()+"\n");
+			  data.append("Arc n "+(i+1)+" : [ "+getAretes()[i].getD_sommet_depart()+" "+getAretes()[i].getD_sommet_arrive()+" ] - coût : "+getAretes()[i].getD_poids()+"\n");
 		  }
 		textArea.setText(data.toString());
 		//textArea.setEditable(false);
 	}
 	public void DijkstraText(JTextArea textArea) {
-		int n = d_nb_sommet;
-		int[][] dist = new int[d_nb_sommet+1][d_nb_sommet+1], pred = new int[d_nb_sommet+1][d_nb_sommet+1];
+		int n = getD_nb_sommet();
+		int[][] dist = new int[getD_nb_sommet()+1][getD_nb_sommet()+1], pred = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
 		for(int i=0; i<=n; ++i)
 	    {
 	    	dist[i] = new int[n+1];
@@ -465,13 +465,13 @@ public class GrapheOrienteValue extends GrapheOriente {
 	}
 	public void ordonnancementTexte(JTextArea textArea) {
 		fs_aps_2_fp_app();
-    	int[] d = new int [d_nb_sommet + 1];
-    	for(int i = 1; i <= d_nb_sommet; i++)
+    	int[] d = new int [getD_nb_sommet() + 1];
+    	for(int i = 1; i <= getD_nb_sommet(); i++)
     		d[i] = 0;
-    	for(int i = 1; i <= d_nb_sommet; i++) {
-    		d[aretes[i].getD_sommet_depart()] = aretes[i].getD_poids();
+    	for(int i = 1; i <= getD_nb_sommet(); i++) {
+    		d[getAretes()[i].getD_sommet_depart().getD_numero()] = getAretes()[i].getD_poids();
     	}
-    	int[] lc = new int[d_nb_sommet +1]; 
+    	int[] lc = new int[getD_nb_sommet() +1]; 
     	int[] fpc;
     	int []appc;
     	int n = app[0], m = fp[0];
@@ -481,20 +481,54 @@ public class GrapheOrienteValue extends GrapheOriente {
     	ordonnancement(d, fpc, appc, lc);
     	StringBuilder data=new StringBuilder();
     	data.append(">>>>>>LC : [ ");
-        for(int i=1;i<=d_nb_sommet;i++){
+        for(int i=1;i<=getD_nb_sommet();i++){
         	data.append(lc[i]+" ");
         }
         data.append("]\n");
         data.append(">>>>>>FPC : [ ");
-        for(int i=0;i<=d_nb_aretes;i++){
+        for(int i=0;i<=getD_nb_aretes();i++){
         	data.append(fpc[i]+" ");
         }
         data.append("]\n");
         data.append(">>>>>>APPC : [ ");
-        for(int i=0;i<=d_nb_sommet;i++){
+        for(int i=0;i<=getD_nb_sommet();i++){
         	data.append(appc[i]+" ");
         }
         data.append("]\n");
         textArea.setText(data.toString());
+	}
+	@Override
+	public void matriceToAretes()//TESTED
+    {
+        int m = d_matrice_d_adjascence[0][1], n = d_matrice_d_adjascence[0][0];
+        aretes = new Arete[m];
+        int k = 0;
+        for (int i = 1; i <= n ; ++i) {
+            for (int j = 1; j <= n ; ++j) {
+                if(d_matrice_d_adjascence[i][j] == 1)
+                {
+                    aretes[k] = new Arete(new Sommet(i), new Sommet(j), d_cout[i][j]);
+                    k++;
+                }
+            }
+        }
+    }
+	public void ajoutNouvelArc(int sommet1, int sommet2, int poids) {
+		d_matrice_d_adjascence[0][1]++;
+		setD_nb_aretes(getD_nb_aretes() + 1);
+		d_matrice_d_adjascence[sommet1][sommet2] = 1;
+		d_cout[sommet1][sommet2] = poids;
+		
+		matriceToFsAps();
+		matriceToAretes();
+	}
+	public void supprimerArc(int arc) {
+		d_matrice_d_adjascence[getAretePos(arc).getD_sommet_depart().getD_numero()][getAretePos(arc).getD_sommet_arrive().getD_numero()] = 0;
+		d_matrice_d_adjascence[0][1]--;
+		d_nb_aretes--;
+		d_cout[getAretePos(arc).getD_sommet_depart().getD_numero()][getAretePos(arc).getD_sommet_arrive().getD_numero()] = Integer.MAX_VALUE;
+		
+		matriceToFsAps();
+		matriceToAretes();
 	}
 }
