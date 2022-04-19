@@ -1,6 +1,8 @@
 package Graphe;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 public class Arete {
 		protected Sommet d_sommet_depart, d_sommet_arrive;
@@ -37,7 +39,25 @@ public class Arete {
 	public void setD_poids(int d_poids) {
 		this.d_poids = d_poids;
 	}
-	public void draw(Graphics2D gr) {
+	public void draw(Graphics2D gr, Color couleur) {
+		gr.setColor(couleur);
 		gr.drawLine(getD_sommet_depart().getD_x()+5, getD_sommet_depart().getD_y()+5, getD_sommet_arrive().getD_x()+5, getD_sommet_arrive().getD_y()+5);
 	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(d_poids, d_sommet_arrive, d_sommet_depart);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Arete other = (Arete) obj;
+		return d_poids == other.d_poids && this.d_sommet_depart.equals(other.d_sommet_depart)
+				&& this.d_sommet_arrive.equals(other.d_sommet_arrive);
+	}
+	
 }

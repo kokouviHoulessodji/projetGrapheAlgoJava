@@ -1,6 +1,8 @@
 package Graphe;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 public class Sommet {
 	private int d_x, d_y;
@@ -37,6 +39,14 @@ public class Sommet {
 	{
 	    return d_y;
 	}
+	
+	public void setD_x(int d_x) {
+		this.d_x = d_x;
+	}
+
+	public void setD_y(int d_y) {
+		this.d_y = d_y;
+	}
 
 	public int getD_numero()
 	{
@@ -52,7 +62,7 @@ public class Sommet {
 	    return Math.sqrt(dx*dx + dy*dy);
 	}
 
-	private void moveTo(int x, int y)
+	public void moveTo(int x, int y)
 	{
 	    d_x = x;
 	    d_y = y;
@@ -68,8 +78,26 @@ public class Sommet {
 	{
 	    System.out.print("("+d_x+", "+d_y+")");
 	}
-	public void draw(Graphics2D gr) {
+	public void draw(Graphics2D gr, Color couleur) {
+		gr.setColor(couleur);
 		gr.fillOval(getD_x(), getD_y(), 20, 20);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(d_numero, d_x, d_y);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Sommet other = (Sommet) obj;
+		return d_numero == other.d_numero && d_x == other.d_x && d_y == other.d_y;
 	}
 	
 }

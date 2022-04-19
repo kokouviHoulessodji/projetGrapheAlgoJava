@@ -19,6 +19,10 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	{
 		super();
 	}
+	public GrapheNonOrienteValue(Arete[] aretes, int nb_sommet, int nb_aretes)
+	{
+		super(aretes, nb_sommet, nb_aretes);
+	}
 	public void remplirCout() {
 		int infini = Integer.MAX_VALUE;
 	    int n = d_aps[0];
@@ -68,49 +72,38 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    }
 	}
 
-	public void kruskal(GrapheNonOrienteValue t) 
+	public Arete[] kruskal(StringBuilder data) 
 	{
 	    trier();
-	    afficheAretes();
+	    //afficheAretes();
 	    int k=0, s, tt;
 	    int n = d_matrice_d_adjascence[0][0];
 	    //Initialiser cfc, pilch et prem
 	    
-	    t = new GrapheNonOrienteValue();
-	    t.setD_nb_sommet(n);
-	    t.setD_nb_aretes(n-1);
+	    Arete[] aretesN = new Arete[n-1];
 	    
-	    t.setAretes(new Arete[n-1]);
-	    System.out.println(">>>>>Le nouveau graphe obtenu contient les arêtes suivants : \n");
+	    
+	    if(data != null)
+	    	data.append(">>>>>Le nouveau graphe obtenu contient les arêtes(extrémité 1, extrémité 2, poids) suivants : \n\n");
+	    else
+	    	System.out.println(">>>>>Le nouveau graphe obtenu contient les arêtes(extrémité 1, extrémité 2, poids) suivants : \n");
 	    for (int i = 0; i < n-1; ++i)
 	    {
 	        s = getAretes()[i].getD_sommet_depart().getD_numero();
 	        tt = getAretes()[i].getD_sommet_arrive().getD_numero();
 	        if(cfc[s] != cfc[tt])
 	        {
-	        	System.out.println("[ "+s+" "+tt+" ]");
-	        	t.getAretes()[k] = getAretes()[i];
+	        	
+	        	if(data != null)
+	        		data.append("[ "+s+" "+tt+" ]\n");
+	        	else
+	        		System.out.println("[ "+s+" "+tt+" "+aretes[i].d_poids+" ]");
+	        	aretesN[k] = new Arete(new Sommet(s), new Sommet(tt), getAretes()[i].getD_poids());
 	        	k++;
 	            fusionner(cfc[s], cfc[tt]);
 	        }
 	    }
-	    System.out.println("Résultats");
-        System.out.print(">>PREM [ ");
-        for(int i=1; i<=getD_nb_sommet(); ++i)
-        	System.out.print(prem[i]+" ");
-        System.out.println("]");
-        System.out.print(">>PILCH [ ");
-        for(int i=1; i<=getD_nb_sommet(); ++i)
-        	System.out.print(pilch[i]+" ");
-        System.out.println("]");
-        System.out.print(">>CFC [ ");
-        for(int i=1; i<=getD_nb_sommet(); ++i)
-        	System.out.print(cfc[i]+" ");
-        System.out.println("]");
-        
-        //t.afficheMatrice();
-        //t.afficheFsAps();
-        //t.afficheAretes();
+	    return aretesN;
 	}
 
 	public void fusionner(int i, int j)
@@ -262,17 +255,21 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 		    	        prem[i] = i;
 		    	        pilch[i] = 0;
 		    	    }
-		            GrapheNonOrienteValue t = new GrapheNonOrienteValue();
-		            kruskal(t);
-		            System.out.println(">>Les caractéristiques du graphe recevrant minimal obtenu");
-		            t.aretesToMatrice();
-		            t.matriceToFsAps();
-		            t.afficheMatrice();
-		            t.afficheFsAps();
-		            
+		            kruskal(null);
 		            //System.out.println(">>Les caractéristiques du graphe recevrant minimal obtenu");
-		            //t.afficheMatrice();
-		            //t.afficheFsAps();
+		            
+		            System.out.print("PREM : [ ");
+		            for (int i = 1; i <= d_nb_sommet ; ++i)
+		            	System.out.print(prem[i]+" ");
+		            System.out.println("]");
+		            System.out.print("PILCH : [ ");
+		            for (int i = 1; i <= d_nb_sommet ; ++i)
+		            	System.out.print(pilch[i]+" ");
+		            System.out.println("]");
+		            System.out.print("CFC : [ ");
+		            for (int i = 1; i <= d_nb_sommet ; ++i)
+		            	System.out.print(cfc[i]+" ");
+		            System.out.println("]");
 		            break;
 	    		case 2:
 	    			System.out.println(Dantzig(null));
@@ -299,7 +296,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 		textArea.setText(data.toString());
 		//textArea.setEditable(false);
 	}
-	public void kurskalText(JTextArea textArea)
+	public Arete[] kurskalText(JTextArea textArea)
 	{	
 		StringBuilder data=new StringBuilder();
 		prem = new int[getD_nb_sommet()+1];
@@ -310,8 +307,8 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	        prem[i] = i;
 	        pilch[i] = 0;
 	    }
-        GrapheNonOrienteValue t = new GrapheNonOrienteValue();
-        kruskal(t);
+        Arete[] areteN = new Arete[d_nb_sommet-1];
+        areteN = kruskal(data);
         data.append(">>PREM [ ");
         for(int i=1; i<=getD_nb_sommet(); ++i)
         	data.append(prem[i]+" ");
@@ -324,11 +321,12 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
         for(int i=1; i<=getD_nb_sommet(); ++i)
         	data.append(cfc[i]+" ");
         data.append("]\n");
-        data.append(">>Les caractéristiques du graphe recevrant minimal obtenu\n");
+        
+        
         //t.afficheMatrice();
         //t.afficheFsAps();
 		textArea.setText(data.toString());
-		//textArea.setEditable(false);
+		return areteN;
 	}
 	public void dantzigText(JTextArea resultat) {
 		StringBuilder data = new StringBuilder();

@@ -2,6 +2,7 @@ package vue;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -24,7 +25,7 @@ public class InterfaceOrienteValue extends JPanel {
 	private GrapheOrienteValue graphe;
 	private JLabel erreur;
 	private JTextArea resultat;
-	private JButton afficherMatrice, afficherFsAps, afficherArcOuAretes, Rang, Tarjan, Distance, Djikstra, ordonnancement, ajoutSommet, supSommet, ajoutArc, supArc;
+	private JButton afficherMatrice, afficherFsAps, afficheGraphe, afficherArcOuAretes, Rang, Tarjan, Distance, Djikstra, ordonnancement, ajoutSommet, supSommet, ajoutArc, supArc;
 	JComboBox<String> combo;
 	JButton BtSais;
 
@@ -112,6 +113,11 @@ public class InterfaceOrienteValue extends JPanel {
         resultat.setAutoscrolls(true);
         resultat.setEditable(false);
         add(resultat);
+        
+        afficheGraphe = new JButton("Afficher le graphe");
+        afficheGraphe.setBounds(10, 620, 150, 30);
+		add(afficheGraphe);
+        
 		event();
 	}
 
@@ -259,7 +265,9 @@ public class InterfaceOrienteValue extends JPanel {
 				{
 					JFrame frame1 = new JFrame();
 					frame1.setLayout(new GridLayout(3, 4));
-					frame1.setSize(getPreferredSize());
+					frame1.setTitle("Ajouter un nouveau sommet");
+					frame1.setLocationRelativeTo(null);
+				    frame1.setMinimumSize(new Dimension(500, 150));
 					JLabel pred = new JLabel("Prédécesseur");
 					frame1.add(pred);
 					JComboBox<String> CheckPred = new JComboBox<String>();
@@ -377,7 +385,9 @@ public class InterfaceOrienteValue extends JPanel {
 				{
 					JFrame frame1 = new JFrame();
 					frame1.setLayout(new GridLayout(1, 3));
-					frame1.setSize(getPreferredSize());
+					frame1.setTitle("Supprimer un sommet");
+					frame1.setLocationRelativeTo(null);
+				    frame1.setMinimumSize(new Dimension(500, 150));
 					JLabel pred = new JLabel("Sommet à supprimer");
 					frame1.add(pred);
 					JComboBox<String> CheckPred = new JComboBox<String>();
@@ -418,7 +428,9 @@ public class InterfaceOrienteValue extends JPanel {
 				{
 					JFrame frame1 = new JFrame();
 					frame1.setLayout(new GridLayout(4, 3));
-					frame1.setSize(getPreferredSize());
+					frame1.setTitle("Ajouter un nouvel arc");
+					frame1.setLocationRelativeTo(null);
+				    frame1.setMinimumSize(new Dimension(500, 150));
 					JLabel pred = new JLabel("Extrémité 1");
 					frame1.add(pred);
 					JComboBox<String> CheckPred = new JComboBox<String>();
@@ -501,13 +513,15 @@ public class InterfaceOrienteValue extends JPanel {
 				{
 					JFrame frame1 = new JFrame();
 					frame1.setLayout(new GridLayout(2, 2));
-					frame1.setSize(getPreferredSize());
+					frame1.setTitle("Supprimer un arc");
+					frame1.setLocationRelativeTo(null);
+				    frame1.setMinimumSize(new Dimension(500, 150));
 					JLabel pred = new JLabel("Arc à supprimer");
 					frame1.add(pred);
 					JComboBox<String> CheckPred = new JComboBox<String>();
 					CheckPred.addItem("choisir");
 					for(int i=0; i<graphe.getD_nb_aretes();i++) {
-						CheckPred.addItem("Arc [ "+graphe.getAretePos(i).getD_sommet_depart()+" "+graphe.getAretePos(i).getD_sommet_arrive()+" ]");
+						CheckPred.addItem("Arc [ "+graphe.getAretePos(i).getD_sommet_depart().getD_numero()+" "+graphe.getAretePos(i).getD_sommet_arrive().getD_numero()+" ]");
 					}
 					
 					frame1.add(CheckPred);
@@ -535,6 +549,26 @@ public class InterfaceOrienteValue extends JPanel {
 					
 					frame1.setVisible(true);
 					//graphe.ajoutSommet();
+				}
+			}
+		});
+		afficheGraphe.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(graphe == null)
+					resultat.setText("Importer d'abord un graphe avant.");
+				else {
+					JFrame frame1 = new JFrame();
+					
+					//frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame1.setBackground(Color.white);
+					frame1.setTitle("Graphe".toUpperCase());
+					frame1.setSize(new Dimension(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height));
+					
+					DessinGraphe de = new DessinGraphe(graphe.getD_nb_sommet(), graphe.getAretes(), "ov");
+					frame1.add(de);
+					de.setSize(getMaximumSize());
+					
+					frame1.setVisible(true);
 				}
 			}
 		});

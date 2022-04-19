@@ -24,6 +24,16 @@ public class Graphe {
 	public Graphe() {
 		
 	}
+	public Graphe(Arete[] aretes, int nb_sommet, int nb_aretes)
+	{
+		this.aretes = new Arete[aretes.length];
+		for(int i=0; i<aretes.length; i++)
+			this.aretes[i] = new Arete(aretes[i].getD_sommet_depart(), aretes[i].getD_sommet_arrive(), aretes[i].getD_poids());
+		this.d_nb_sommet = nb_sommet;
+		this.d_nb_aretes = nb_aretes;
+		aretesToMatrice();
+		matriceToFsAps();
+	}
 	protected void empiler(int x, int[] pilch) {
 		pilch[x] = pilch[0];
 	    pilch[0] = x;
@@ -244,6 +254,31 @@ public class Graphe {
                 }
             }
             d_fs[k]=0;
+            k++;
+        }
+    }
+    public static void matriceToFsAps(int [][] mat, int []fs, int[]aps)//TESTED
+    {
+        int NombreSommet=mat[0][0];
+        int NombreArc=mat[0][1];
+        fs=new int [NombreSommet+NombreArc+1];
+        aps=new int[NombreSommet+1];
+        fs[0]=NombreSommet+NombreArc;
+        aps=new int[NombreSommet+1];
+        aps[0]=NombreSommet;
+        int k = 1;
+        for(int i=1;i<=NombreSommet;i++)
+        {
+        	aps[i] = k;
+            for(int j=1;j<=NombreSommet;j++)
+            {
+                if(mat[i][j]==1)
+                {
+                    fs[k]=j;
+                    k++;
+                }
+            }
+            fs[k]=0;
             k++;
         }
     }
@@ -778,7 +813,7 @@ public class Graphe {
     {
     	System.out.println("Aretes/Arcs : ");
     	for(int i=0; i<getD_nb_aretes(); ++i)
-    		System.out.println("[ " + getAretes()[i].getD_sommet_depart() + " " + getAretes()[i].getD_sommet_arrive() + " ]");
+    		System.out.println("[ " + getAretes()[i].getD_sommet_depart().getD_numero() + " " + getAretes()[i].getD_sommet_arrive().getD_numero() + " ]");
     }
     public void distance(int r, int[] dist)//TESTED
     {
@@ -977,25 +1012,42 @@ public class Graphe {
             }
         }
         for (int i = 0; i < getD_nb_aretes() ; ++i) {
-            d_matrice_d_adjascence[getAretes()[i].getD_sommet_depart().getD_numero()][getAretes()[i].getD_sommet_arrive().getD_numero()] = 1;
+            d_matrice_d_adjascence[aretes[i].getD_sommet_depart().getD_numero()][aretes[i].getD_sommet_arrive().getD_numero()] = 1;
             d_matrice_d_adjascence[0][1]++;
         }
+    }
+    public static int[][] aretesToMatrice(Arete[] aretes, int nb_sommet)//TESTED
+    {
+        int [][] mat = new int[nb_sommet+1][nb_sommet+1];
+        mat[0][0] = nb_sommet;
+        mat[0][1] = 0;
+        
+        for (int i = 1; i <= nb_sommet ; ++i) {
+            for (int j = 1; j <= nb_sommet ; ++j) {
+                mat[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < aretes.length ; ++i) {
+            mat[aretes[i].getD_sommet_depart().getD_numero()][aretes[i].getD_sommet_arrive().getD_numero()] = 1;
+            mat[0][1]++;
+        }
+        return mat;
     }
     /*
      * Méthode qui permet de trier un graphe par ordres croissants des poids d'arêtes
      */
     public void trier()//TESTED
     {
-        int p;
+        Arete p;
         int m = getD_nb_aretes();
         
         for (int i = 0; i < m - 1; i++) {
             for (int j = i + 1; j < m; j++) {
-                if ((getAretes()[j].getD_poids() < getAretes()[i].getD_poids()) || (getAretes()[j].getD_poids() == getAretes()[i].getD_poids() && getAretes()[j].getD_sommet_depart().getD_numero() < getAretes()[i].getD_sommet_arrive().getD_numero()) ||
-                    (getAretes()[j].getD_poids() == getAretes()[i].getD_poids() && getAretes()[j].getD_sommet_depart().getD_numero() < getAretes()[i].getD_sommet_arrive().getD_numero())) {
-                    p = getAretes()[j].getD_poids();
-                    getAretes()[j].setD_poids(getAretes()[i].getD_poids());;
-                    getAretes()[i].setD_poids(p);;
+                if ((aretes[j].getD_poids() < aretes[i].getD_poids())
+                		|| (aretes[j].getD_poids() == aretes[i].getD_poids() && aretes[j].getD_sommet_depart().getD_numero() < aretes[i].getD_sommet_depart().getD_numero())) {
+                    p = aretes[j];
+                    aretes[j] = aretes[i];
+                    aretes[i] = p;
                 }
             }
         }
@@ -1195,16 +1247,13 @@ public class Graphe {
 			setD_nb_aretes(m - n);
 			in.close();	
 			file1.close();
+			fsApsToMatrice();
+			matriceToAretes();
 		}
 		catch(Exception e)
 		{
 			 System.out.println ("Fichier introuvable. "+e.getMessage());
 			
-		}
-		if(d_fs != null && d_aps != null)
-		{
-			fsApsToMatrice();
-			matriceToAretes();
 		}
     }
     public void chargerMatriceFromFichier() {

@@ -28,6 +28,10 @@ public class GrapheNonOriente extends Graphe {
 				break;
 		}
 	}
+	public GrapheNonOriente(Arete[] aretes, int nb_sommet, int nb_aretes)
+	{
+		super(aretes, nb_sommet, nb_aretes);
+	}
 	/*
 	 * Déterminer la coloration d'un graphe
 	 */
@@ -129,9 +133,6 @@ public class GrapheNonOriente extends Graphe {
         data.append("Le nombre chromatique du graphe est égal à "+nChr+"\n");
         textArea.setText(data.toString());
 	}
-	public void dessinerGraphe() {
-		dessin = new DessinGraphe(d_nb_sommet, aretes);
-	}
 	public void ajoutNouveauSommet(String[] voisin) {
 		int[][] mat = new int[d_nb_sommet + 2][d_nb_sommet + 2];
 		mat[0][0] = d_nb_sommet + 1;
@@ -184,6 +185,11 @@ public class GrapheNonOriente extends Graphe {
 		d_matrice_d_adjascence = mat;
 		matriceToAretes();
 		matriceToFsAps();
+		demi_degre_ext();
+		demi_degre_int();
+        for (int i = 1; i <= d_aps[0] ; ++i)
+        	if(dde[i] == 0 && ddi[i] == 0)
+        		supprimerSommet(i);
 	}
 	public void ajoutNouvelArete(int sommet1, int sommet2) {
 		d_matrice_d_adjascence[0][1] = d_matrice_d_adjascence[0][1] + 2;

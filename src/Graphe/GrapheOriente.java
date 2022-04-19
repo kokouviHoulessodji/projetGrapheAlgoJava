@@ -60,7 +60,8 @@ public class GrapheOriente extends Graphe{
 	*/
 	public void traverse(int s, int p) {
 	    int t;
-	    p++;
+	    System.out.println(p);
+	    p = p + 1;
 	    num[s] = p;
 	    ro[s] = p; // numérote s et initialise ro[s]
 	    empiler(s, tarj);
@@ -458,6 +459,11 @@ public class GrapheOriente extends Graphe{
 		d_matrice_d_adjascence = mat;
 		matriceToAretes();
 		matriceToFsAps();
+		demi_degre_ext();
+		demi_degre_int();
+        for (int i = 1; i <= d_aps[0] ; ++i)
+        	if(dde[i] == 0 && ddi[i] == 0)
+        		supprimerSommet(i);
 	}
 	public void ajoutNouvelArc(int sommet1, int sommet2) {
 		d_matrice_d_adjascence[0][1]++;
