@@ -25,7 +25,7 @@ public class InterfaceOrienteValue extends JPanel {
 	private GrapheOrienteValue graphe;
 	private JLabel erreur;
 	private JTextArea resultat;
-	private JButton afficherMatrice, afficherFsAps, afficheGraphe, afficherArcOuAretes, Rang, Tarjan, Distance, Djikstra, ordonnancement, ajoutSommet, supSommet, ajoutArc, supArc;
+	private JButton afficherMatrice, afficherFsAps, afficheGraphe, importerCout, afficherArcOuAretes, Rang, Tarjan, Distance, Djikstra, ordonnancement, ajoutSommet, supSommet, ajoutArc, supArc;
 	JComboBox<String> combo;
 	JButton BtSais;
 
@@ -94,6 +94,11 @@ public class InterfaceOrienteValue extends JPanel {
         BtSais.setBounds(300, 10, 150, 30);
         BtSais.setEnabled(false);
         add(BtSais);
+        
+        importerCout = new JButton("Importer la matrice des coûts");
+        importerCout.setBounds(150, 45, 300, 30);
+        
+        add(importerCout);
 		
 		
 		Djikstra = new JButton("Djikstra");
@@ -147,6 +152,15 @@ public class InterfaceOrienteValue extends JPanel {
 		BtSais.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				graphe = new GrapheOrienteValue(combo.getSelectedIndex());
+				
+			}
+		});
+		importerCout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(graphe == null)
+					resultat.setText("Importer d'abord un graphe avant.");
+				else
+					graphe.chargerMatriceCoutFromFichier();
 			}
 		});
 		Rang.addActionListener(new ActionListener() {
@@ -169,9 +183,9 @@ public class InterfaceOrienteValue extends JPanel {
 		    	            max = rang[i];
 		    	    }
 		    	    if(max == Integer.MAX_VALUE)
-		    	    	data.append(">>Le rang du grand est plus l'infini");
+		    	    	data.append(">>Le rang du graphe est plus l'infini");
 		    	    else
-		    	    	data.append(">>Le rang du grand est égal à "+max);
+		    	    	data.append(">>Le rang du graphe est égal à "+max);
 					resultat.setText(data.toString());
 				}
 			}
@@ -219,7 +233,10 @@ public class InterfaceOrienteValue extends JPanel {
 		            for(int i=1; i<=n; i++) {
 		            	data.append("Sommet "+i+" : [ ");
 		            	for(int j=1; j<=n; j++) {
-		            		data.append(dist[i][j]+" ");
+		            		if(dist[i][j] == -1)
+		            			data.append("∞ ");
+		            		else
+		            			data.append(dist[i][j]+" ");
 		            	}
 		            	data.append(" ]\n");
 		            }
@@ -243,7 +260,10 @@ public class InterfaceOrienteValue extends JPanel {
 					resultat.setText("Importer d'abord un graphe avant.");
 				else
 				{
-					graphe.DijkstraText(resultat);
+					if(graphe.getD_cout() == null)
+						resultat.setText("Importer d'abord la matrice des coûts.");
+					else
+						graphe.DijkstraText(resultat);
 				}
 			}
 		});
@@ -253,7 +273,10 @@ public class InterfaceOrienteValue extends JPanel {
 					resultat.setText("Importer d'abord un graphe avant.");
 				else
 				{
-					graphe.ordonnancementTexte(resultat);
+					if(graphe.getD_cout() == null)
+						resultat.setText("Importer d'abord la matrice des coûts.");
+					else
+						graphe.ordonnancementTexte(resultat);
 				}
 			}
 		});

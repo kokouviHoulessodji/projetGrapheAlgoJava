@@ -1,7 +1,10 @@
 package Graphe;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Scanner;
 
+import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 
 public class GrapheNonOrienteValue extends GrapheNonOriente {
@@ -13,7 +16,8 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	}
 	public GrapheNonOrienteValue(int val) {
 		super(val);
-		remplirCout();
+		if(d_matrice_d_adjascence != null)
+			remplirCout();
 	}
 	public GrapheNonOrienteValue()
 	{
@@ -291,7 +295,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 		data.append("Nombre d'arêtes = "+getD_nb_aretes()+"\n");
 		  for(int i=0;i<getD_nb_aretes();i++)
 		  {
-			  data.append("Arête n "+(i+1)+" : [ "+getAretes()[i].getD_sommet_depart()+" "+getAretes()[i].getD_sommet_arrive()+" ] - coût : "+getAretes()[i].getD_poids()+"\n");
+			  data.append("Arête n "+(i+1)+" : [ "+getAretes()[i].getD_sommet_depart().getD_numero()+" "+getAretes()[i].getD_sommet_arrive().getD_numero()+" ] - coût : "+getAretes()[i].getD_poids()+"\n");
 		  }
 		textArea.setText(data.toString());
 		//textArea.setEditable(false);
@@ -367,5 +371,51 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 		aretes = NAretes;
 		setD_nb_aretes(getD_nb_aretes() - 1);
 	}
+	public int[][] getD_cout() {
+		// TODO Auto-generated method stub
+		return d_cout;
+	}
+	public void chargerMatriceCoutFromFichier(String nomFichier) {
+    	
+		
+		try
+		{
+			FileReader file1=new FileReader(nomFichier);
+			BufferedReader in = new BufferedReader(file1);
+			String line;
+			line = in.readLine();
+			line = in.readLine();
+			d_cout = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
+			d_cout[0][0] = getD_nb_sommet();
+			d_cout[0][1] = getD_nb_aretes();
+			for(int i=1; i<=getD_nb_sommet(); i++)
+				d_cout[i] = new int[getD_nb_sommet()+1];
+			int i = 1;
+			while(line != null)
+			{
+				String []tab = line.split(" ");
+				for(int j=0; j<=getD_nb_sommet(); j++)
+					d_cout[i][j] = Integer.parseInt(tab[j]);
+				i++;
+				line = in.readLine();
+			}
+			in.close();	
+			file1.close();
+		}
+		catch(Exception e)
+		{
+			 System.out.println ("Fichier introuvable. "+e.getMessage());
+		}
+    }
+	public void chargerMatriceCoutFromFichier() {
+    	JFileChooser file=new JFileChooser();
+		int reponse=file.showOpenDialog(null);
+		String nomFichier="";
+		if(reponse==JFileChooser.APPROVE_OPTION)
+		{
+			nomFichier=file.getSelectedFile().getAbsolutePath();
+		}
+		chargerMatriceCoutFromFichier(nomFichier);
+    }
 
 }

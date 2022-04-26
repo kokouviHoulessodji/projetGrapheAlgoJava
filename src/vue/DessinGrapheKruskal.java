@@ -26,9 +26,7 @@ public class DessinGrapheKruskal extends JComponent {
 		this.nb_points = nb;
 		this.estPresent = new boolean[arete.length];
 		System.out.println("Aretes/Arcs : ");
-    	for(int i=0; i<arete.length; ++i)
-    		System.out.println("[ " + areteN[i].getD_sommet_depart().getD_numero() + " " + areteN[i].getD_sommet_arrive().getD_numero() + " ]");
-    
+    	
 		for(int i=0; i<arete.length; i++) {
 			int j=0;
 			while(j<areteN.length && !arete[i].equals(areteN[j]))

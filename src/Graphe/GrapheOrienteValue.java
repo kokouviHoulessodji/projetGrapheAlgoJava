@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
 
+import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 
 public class GrapheOrienteValue extends GrapheOriente {
@@ -16,7 +17,8 @@ public class GrapheOrienteValue extends GrapheOriente {
 	}
 	public GrapheOrienteValue(int val) {
 		super(val);
-		remplirCout();
+		if(d_matrice_d_adjascence != null)
+			remplirCout();
 	}
 	public GrapheOrienteValue()
 	{
@@ -27,16 +29,16 @@ public class GrapheOrienteValue extends GrapheOriente {
 		int infini = Integer.MAX_VALUE;
 	    int n = d_aps[0];
 	    int m = getD_nb_aretes();
-	    d_cout = new int[n+1][n+1];
-	    d_cout[0] = new int[2];
-	    d_cout[0][0] = n;
+	    setD_cout(new int[n+1][n+1]);
+	    getD_cout()[0] = new int[2];
+	    getD_cout()[0][0] = n;
 	    for (int i = 1; i <= n ; ++i)
-	        d_cout[i] = new int[n+1];
+	        getD_cout()[i] = new int[n+1];
 	    for (int i = 1; i <= n ; ++i)
 	        for (int j = 1; j <= n ; ++j)
-	            d_cout[i][j] = infini;
+	            getD_cout()[i][j] = infini;
 	    for (int i = 0; i < m ; ++i) {
-	        d_cout[getAretes()[i].getD_sommet_depart().getD_numero()][getAretes()[i].getD_sommet_arrive().getD_numero()] = getAretes()[i].getD_poids();
+	        getD_cout()[getAretes()[i].getD_sommet_depart().getD_numero()][getAretes()[i].getD_sommet_arrive().getD_numero()] = getAretes()[i].getD_poids();
 	    }
 	}
 	public void saisir_cout() //TESTED
@@ -45,14 +47,14 @@ public class GrapheOrienteValue extends GrapheOriente {
 	    int infini = Integer.MAX_VALUE;
 	    int n = d_aps[0];
 	    int m = getD_nb_aretes();
-	    d_cout = new int[n+1][n+1];
-	    d_cout[0] = new int[2];
-	    d_cout[0][0] = n;
+	    setD_cout(new int[n+1][n+1]);
+	    getD_cout()[0] = new int[2];
+	    getD_cout()[0][0] = n;
 	    for (int i = 1; i <= n ; ++i)
-	        d_cout[i] = new int[n+1];
+	        getD_cout()[i] = new int[n+1];
 	    for (int i = 1; i <= n ; ++i)
 	        for (int j = 1; j <= n ; ++j)
-	            d_cout[i][j] = infini;
+	            getD_cout()[i][j] = infini;
 	    for (int i = 0; i < m ; ++i) {
 	        int p;
 	        System.out.print("Saisir le poids de l'arc [ "+getAretes()[i].getD_sommet_depart()+", "+getAretes()[i].getD_sommet_arrive()+" ] : ");
@@ -70,7 +72,7 @@ public class GrapheOrienteValue extends GrapheOriente {
     			}
     		}
 	        getAretes()[i].setD_poids(p);
-	        d_cout[getAretes()[i].getD_sommet_depart().getD_numero()][getAretes()[i].getD_sommet_arrive().getD_numero()] = p;
+	        getD_cout()[getAretes()[i].getD_sommet_depart().getD_numero()][getAretes()[i].getD_sommet_arrive().getD_numero()] = p;
 	    }
 	}
 	public void ordonnancement(int []d, int []fpc, int []appc, int []lc)
@@ -170,7 +172,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	    /* initialisation des tableaux d, pr et inS*/
 	    for (i = 1; i <= n; i++)
 	    {
-	        d[i] = d_cout[s][i];
+	        d[i] = getD_cout()[s][i];
 	        inS[i] = 1;
 	        k = d_aps[s];
 	        while(d_fs[k] != 0 && d_fs[k] != i)
@@ -202,7 +204,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	        while (d_fs[k] != 0)
 	        {
 	            if (inS[d_fs[k]] == 1) {
-	                v = d[j] + d_cout[j][d_fs[k]];
+	                v = d[j] + getD_cout()[j][d_fs[k]];
 	                if (v < d[d_fs[k]]) {
 	                    d[d_fs[k]] = v;
 	                    pr[d_fs[k]] = j;
@@ -401,44 +403,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	        choix = menu();
 	    }
 	}
-	public void chargerMatriceCoutFromFichier(String nomFichier) {
-    	
-		
-		try
-		{
-			FileReader file1=new FileReader(nomFichier);
-			BufferedReader in = new BufferedReader(file1);
-			String line;
-			line = in.readLine();
-			setD_nb_sommet(Integer.parseInt(line.split(" ")[0]));
-			setD_nb_aretes(Integer.parseInt(line.split(" ")[1]));
-			line = in.readLine();
-			d_matrice_d_adjascence = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
-			d_matrice_d_adjascence[0][0] = getD_nb_sommet();
-			d_matrice_d_adjascence[0][1] = getD_nb_aretes();
-			for(int i=1; i<=getD_nb_sommet(); i++)
-				d_matrice_d_adjascence[i] = new int[getD_nb_sommet()+1];
-			int i = 1;
-			while(line != null)
-			{
-				String []tab = line.split(" ");
-				for(int j=0; j<=getD_nb_sommet(); j++)
-					d_matrice_d_adjascence[i][j] = Integer.parseInt(tab[j]);
-				i++;
-				line = in.readLine();
-			}
-			in.close();	
-			file1.close();
-		}
-		catch(Exception e)
-		{
-			 System.out.println ("Fichier introuvable. "+e.getMessage());
-			
-		}
-		
-		matriceToFsAps();
-		matriceToAretes();
-    }
+	
 	@Override
 	public void afficheAretestext(JTextArea textArea)
 	{	
@@ -447,7 +412,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 		data.append("Nombre d'arcs = "+getD_nb_aretes()+"\n");
 		  for(int i=0;i<getD_nb_aretes();i++)
 		  {
-			  data.append("Arc n "+(i+1)+" : [ "+getAretes()[i].getD_sommet_depart()+" "+getAretes()[i].getD_sommet_arrive()+" ] - coût : "+getAretes()[i].getD_poids()+"\n");
+			  data.append("Arc n "+(i+1)+" : [ "+getAretes()[i].getD_sommet_depart().getD_numero()+" "+getAretes()[i].getD_sommet_arrive().getD_numero()+" ] - coût : "+getAretes()[i].getD_poids()+"\n");
 		  }
 		textArea.setText(data.toString());
 		//textArea.setEditable(false);
@@ -507,7 +472,10 @@ public class GrapheOrienteValue extends GrapheOriente {
             for (int j = 1; j <= n ; ++j) {
                 if(d_matrice_d_adjascence[i][j] == 1)
                 {
-                    aretes[k] = new Arete(new Sommet(i), new Sommet(j), d_cout[i][j]);
+                	if(getD_cout() == null)
+                		aretes[k] = new Arete(new Sommet(i), new Sommet(j));
+                	else
+                		aretes[k] = new Arete(new Sommet(i), new Sommet(j), getD_cout()[i][j]);
                     k++;
                 }
             }
@@ -517,7 +485,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 		d_matrice_d_adjascence[0][1]++;
 		setD_nb_aretes(getD_nb_aretes() + 1);
 		d_matrice_d_adjascence[sommet1][sommet2] = 1;
-		d_cout[sommet1][sommet2] = poids;
+		getD_cout()[sommet1][sommet2] = poids;
 		
 		matriceToFsAps();
 		matriceToAretes();
@@ -526,9 +494,57 @@ public class GrapheOrienteValue extends GrapheOriente {
 		d_matrice_d_adjascence[getAretePos(arc).getD_sommet_depart().getD_numero()][getAretePos(arc).getD_sommet_arrive().getD_numero()] = 0;
 		d_matrice_d_adjascence[0][1]--;
 		d_nb_aretes--;
-		d_cout[getAretePos(arc).getD_sommet_depart().getD_numero()][getAretePos(arc).getD_sommet_arrive().getD_numero()] = Integer.MAX_VALUE;
+		getD_cout()[getAretePos(arc).getD_sommet_depart().getD_numero()][getAretePos(arc).getD_sommet_arrive().getD_numero()] = Integer.MAX_VALUE;
 		
 		matriceToFsAps();
 		matriceToAretes();
 	}
+	public int[][] getD_cout() {
+		return d_cout;
+	}
+	public void setD_cout(int[][] d_cout) {
+		this.d_cout = d_cout;
+	}
+	public void chargerMatriceCoutFromFichier(String nomFichier) {
+    	
+		
+		try
+		{
+			FileReader file1=new FileReader(nomFichier);
+			BufferedReader in = new BufferedReader(file1);
+			String line;
+			line = in.readLine();
+			line = in.readLine();
+			d_cout = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
+			d_cout[0][0] = getD_nb_sommet();
+			d_cout[0][1] = getD_nb_aretes();
+			for(int i=1; i<=getD_nb_sommet(); i++)
+				d_cout[i] = new int[getD_nb_sommet()+1];
+			int i = 1;
+			while(line != null)
+			{
+				String []tab = line.split(" ");
+				for(int j=0; j<=getD_nb_sommet(); j++)
+					d_cout[i][j] = Integer.parseInt(tab[j]);
+				i++;
+				line = in.readLine();
+			}
+			in.close();	
+			file1.close();
+		}
+		catch(Exception e)
+		{
+			 System.out.println ("Fichier introuvable. "+e.getMessage());
+		}
+    }
+	public void chargerMatriceCoutFromFichier() {
+    	JFileChooser file=new JFileChooser();
+		int reponse=file.showOpenDialog(null);
+		String nomFichier="";
+		if(reponse==JFileChooser.APPROVE_OPTION)
+		{
+			nomFichier=file.getSelectedFile().getAbsolutePath();
+		}
+		chargerMatriceCoutFromFichier(nomFichier);
+    }
 }

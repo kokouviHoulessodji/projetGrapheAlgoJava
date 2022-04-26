@@ -1128,7 +1128,6 @@ public class Graphe {
 		catch(Exception e)
 		{
 			 System.out.println ("Fichier introuvable. "+e.getMessage());
-			
 		}
 		//afficheMatrice();
 		if(d_matrice_d_adjascence != null)
@@ -1137,6 +1136,7 @@ public class Graphe {
 			matriceToAretes();
 		}
     }
+    
     public void chargerAretesFromFichier(String nomFichier) {
     	
     	try
@@ -1266,6 +1266,7 @@ public class Graphe {
 		}
 		chargerMatriceFromFichier(nomFichier);
     }
+    
     public void chargerFsApsFromFichier() {
     	JFileChooser file=new JFileChooser();
 		int reponse=file.showOpenDialog(null);

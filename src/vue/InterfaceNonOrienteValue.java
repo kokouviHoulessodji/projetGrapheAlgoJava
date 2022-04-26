@@ -24,7 +24,7 @@ public class InterfaceNonOrienteValue extends JPanel {
 	private GrapheNonOrienteValue graphe;
 	private JLabel erreur;
 	private JTextArea resultat;
-	private JButton afficherMatrice, afficherFsAps, afficherGrapheColoration, afficherGrapheKruskal, afficherArcOuAretes, Rang, Distance, coloration, Kruskal, afficheGraphe, Dantzig, ajoutSommet, supSommet, ajoutArc, supArc;
+	private JButton afficherMatrice, afficherFsAps, importerCout, afficherGrapheColoration, afficherGrapheKruskal, afficherArcOuAretes, Rang, Distance, coloration, Kruskal, afficheGraphe, Dantzig, ajoutSommet, supSommet, ajoutArc, supArc;
 	JComboBox<String> combo;
 	JButton BtSais;
 	public InterfaceNonOrienteValue() {
@@ -92,6 +92,11 @@ public class InterfaceNonOrienteValue extends JPanel {
         BtSais.setEnabled(false);
         add(BtSais);
         
+        importerCout = new JButton("Importer la matrice des coûts");
+        importerCout.setBounds(150, 45, 300, 30);
+        
+        add(importerCout);
+        
 		Kruskal = new JButton("Kruskal");
 		Kruskal.setBounds(450, 80, 150, 30);
 		add(Kruskal);
@@ -154,6 +159,14 @@ public class InterfaceNonOrienteValue extends JPanel {
 				graphe = new GrapheNonOrienteValue(combo.getSelectedIndex());
 			}
 		});
+		importerCout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(graphe == null)
+					resultat.setText("Importer d'abord un graphe avant.");
+				else
+					graphe.chargerMatriceCoutFromFichier();
+			}
+		});
 		Rang.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(graphe == null)
@@ -175,9 +188,9 @@ public class InterfaceNonOrienteValue extends JPanel {
 		    	            max = rang[i];
 		    	    }
 		    	    if(max == Integer.MAX_VALUE)
-		    	    	data.append(">>Le rang du grand est plus l'infini");
+		    	    	data.append(">>Le rang du graphe est plus l'infini");
 		    	    else
-		    	    	data.append(">>Le rang du grand est égal à "+max);
+		    	    	data.append(">>Le rang du graphe est égal à "+max);
 					resultat.setText(data.toString());
 				}
 			}
@@ -225,7 +238,10 @@ public class InterfaceNonOrienteValue extends JPanel {
 		            for(int i=1; i<=n; i++) {
 		            	data.append("Sommet "+i+" : [ ");
 		            	for(int j=1; j<=n; j++) {
-		            		data.append(dist[i][j]+" ");
+		            		if(dist[i][j] == -1)
+		            			data.append("∞ ");
+		            		else
+		            			data.append(dist[i][j]+" ");
 		            	}
 		            	data.append(" ]\n");
 		            }
@@ -249,7 +265,10 @@ public class InterfaceNonOrienteValue extends JPanel {
 					resultat.setText("Importer d'abord un graphe avant.");
 				else
 				{
-					graphe.dantzigText(resultat);
+					if(graphe.getD_cout() == null)
+						resultat.setText("Importer d'abord la matrice des coûts.");
+					else
+						graphe.dantzigText(resultat);
 				}
 			}
 		});
@@ -259,7 +278,10 @@ public class InterfaceNonOrienteValue extends JPanel {
 					resultat.setText("Importer d'abord un graphe avant.");
 				else
 				{
-					graphe.kurskalText(resultat);
+					if(graphe.getD_cout() == null)
+						resultat.setText("Importer d'abord la matrice des coûts.");
+					else
+						graphe.kurskalText(resultat);
 				}
 			}
 		});

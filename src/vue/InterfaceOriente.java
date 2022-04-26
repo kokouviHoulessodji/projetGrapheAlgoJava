@@ -169,9 +169,9 @@ public class InterfaceOriente extends JPanel {
 		    	            max = rang[i];
 		    	    }
 		    	    if(max == Integer.MAX_VALUE)
-		    	    	data.append(">>Le rang du grand est plus l'infini(∞)");
+		    	    	data.append(">>Le rang du graphe est plus l'infini(∞)");
 		    	    else
-		    	    	data.append(">>Le rang du grand est égal à "+max);
+		    	    	data.append(">>Le rang du graphe est égal à "+max);
 					resultat.setText(data.toString());
 				}
 			}
@@ -219,7 +219,10 @@ public class InterfaceOriente extends JPanel {
 		            for(int i=1; i<=n; i++) {
 		            	data.append("Sommet "+i+" : [ ");
 		            	for(int j=1; j<=n; j++) {
-		            		data.append(dist[i][j]+" ");
+		            		if(dist[i][j] == -1)
+		            			data.append("∞ ");
+		            		else
+		            			data.append(dist[i][j]+" ");
 		            	}
 		            	data.append(" ]\n");
 		            }

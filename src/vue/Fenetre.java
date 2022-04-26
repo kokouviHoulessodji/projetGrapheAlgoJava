@@ -155,11 +155,10 @@ public class Fenetre extends JFrame implements Runnable {
         //Les buttons des algo de bases communs à tous les graphes
         
         
-        
         //Page d'accueil
         page_accueil.setBackground(Color.white);
         page_accueil.setLayout(new BorderLayout());
-        JLabel presentation = new JLabel("BIENVENU DANS L'APPLICATION DE GRAPHE");
+        JLabel presentation = new JLabel("BIENVENUE DANS L'APPLICATION DE GRAPHE");
         presentation.setBounds(10, 10, 300, 21);
         presentation.setHorizontalAlignment(SwingConstants.CENTER);
         presentation.setVerticalAlignment(SwingConstants.CENTER);

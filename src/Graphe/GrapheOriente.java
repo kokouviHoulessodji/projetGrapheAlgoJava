@@ -325,9 +325,9 @@ public class GrapheOriente extends Graphe{
 	    	            max = rang[i];
 	    	    }
 	    	    if(max == Integer.MAX_VALUE)
-	    	    	System.out.println(">>Le rang du grand est plus l'infini");
+	    	    	System.out.println(">>Le rang du graphe est plus l'infini");
 	    	    else
-	    	    	System.out.println(">>Le rang du grand est égal à "+max);
+	    	    	System.out.println(">>Le rang du graphe est égal à "+max);
 	        }
 	        else if(choix == 4) {
 	        	int n = d_aps[0];
