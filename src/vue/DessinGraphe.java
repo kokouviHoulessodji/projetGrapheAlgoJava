@@ -30,11 +30,11 @@ public class DessinGraphe extends JComponent {
 	protected void paintComponent(Graphics g) {
 		Graphics2D gr = (Graphics2D)g;
 		Random r = new Random();
-		char[][] num = new char[nb_points+1][1];
+		String[] num = new String[nb_points+1];
 		
 		Sommet xy[] = new Sommet[nb_points+1];
 		for(int i=1; i<=nb_points; i++) {
-			num[i][0] = String.valueOf(i).charAt(0);
+			num[i] = String.valueOf(i);
 			int x = r.nextInt(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width - 70);
 			int y = r.nextInt(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height - 70);
 	        int j = 1;
@@ -56,28 +56,31 @@ public class DessinGraphe extends JComponent {
 			aretes[i].getD_sommet_arrive().moveTo(xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y());
 		}
 		
-		char[][] poids = new char[aretes.length][1];
+		String[] poids = new String[aretes.length];
 		for(int i=0; i<aretes.length; i++) {
-			gr.setColor(Color.RED);
-			poids[i][0] = String.valueOf(aretes[i].getD_poids()).charAt(0);
-			gr.drawChars(num[aretes[i].getD_sommet_depart().getD_numero()], 0, 1, xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y());
-			gr.drawChars(num[aretes[i].getD_sommet_arrive().getD_numero()], 0, 1, xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y());
+			gr.setColor(Color.BLACK);
+			poids[i] = String.valueOf(aretes[i].getD_poids());
+			//gr.drawString(num[aretes[i].getD_sommet_depart().getD_numero()], xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y());
+			//gr.drawString(num[aretes[i].getD_sommet_arrive().getD_numero()], xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y());
 			//gr.drawLine(xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x()+5, xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y()+5, xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x()+5, xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y()+5);
-			aretes[i].draw(gr, Color.RED);
+			
 			gr.setColor(Color.darkGray);
-			if(TypeGraphe.toLowerCase().equals("nov") || TypeGraphe.toLowerCase().equals("ov"))
-					gr.drawChars(poids[i], 0, 1, (xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x()+xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x())/2, (xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y()+xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y())/2);
-
+			if(TypeGraphe.toLowerCase().equals("nov") || TypeGraphe.toLowerCase().equals("ov")) {
+					gr.drawString(poids[i], (xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x()+xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x())/2, (xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y()+xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y())/2);
+					aretes[i].draw(gr, Color.BLACK, true);
+			}
+			else
+				aretes[i].draw(gr, Color.BLACK, false);
 			if(TypeGraphe.toLowerCase().equals("ov") || TypeGraphe.toLowerCase().equals("onv")) {
-				int mx1 = (xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x()+xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x())/2 + 5;
-				int my1 = (xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y()+xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y())/2 + 5;
+				int mx1 = (xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x()+xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x())/2;
+				int my1 = (xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y()+xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y())/2;
 				if(xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x() < xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x()) {
-					gr.drawLine(mx1, my1, mx1-10, my1);
-					gr.drawLine(mx1, my1, mx1, my1+10);
+					gr.setColor(Color.RED);
+					gr.drawString(">", mx1, my1+10);
 				}
 				else {
-					gr.drawLine(mx1, my1, mx1, my1-10);
-					gr.drawLine(mx1, my1, mx1-10, my1);
+					gr.setColor(Color.RED);
+					gr.drawString("<", mx1, my1+10);
 				}
 			}
 

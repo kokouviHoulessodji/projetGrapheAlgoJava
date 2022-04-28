@@ -22,14 +22,6 @@ public class Sommet {
 		this(0,0, numero);
 	}
 
-	
-
-	private Sommet cartesian(int x, int y){
-	    return new Sommet(x, y, 0);
-	}
-
-	
-
 	public int getD_x()
 	{
 	    return d_x;
@@ -56,11 +48,6 @@ public class Sommet {
 	{
 	    d_numero = numero;
 	}
-	private double distance(Sommet p)
-	{
-	    double dx = p.d_x-d_x, dy = p.d_y-d_y;
-	    return Math.sqrt(dx*dx + dy*dy);
-	}
 
 	public void moveTo(int x, int y)
 	{
@@ -80,9 +67,10 @@ public class Sommet {
 	}
 	public void draw(Graphics2D gr, Color couleur) {
 		gr.setColor(couleur);
-		gr.fillOval(getD_x(), getD_y(), 20, 20);
+		gr.drawString(d_numero+"", getD_x(), getD_y());
+		gr.fillOval(getD_x(), getD_y(), 30, 30);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(d_numero, d_x, d_y);

@@ -11,9 +11,9 @@ public class GrapheOrienteValue extends GrapheOriente {
 	private int[][] d_cout;
 	public GrapheOrienteValue(boolean oriente) {
 		super(oriente);
-		saisir_cout();
-	    aretesToMatrice();
-	    matriceToFsAps();
+		if(d_matrice_d_adjascence != null)
+			remplirCout();
+		afficheAretes();
 	}
 	public GrapheOrienteValue(int val) {
 		super(val);
@@ -57,7 +57,7 @@ public class GrapheOrienteValue extends GrapheOriente {
 	            getD_cout()[i][j] = infini;
 	    for (int i = 0; i < m ; ++i) {
 	        int p;
-	        System.out.print("Saisir le poids de l'arc [ "+getAretes()[i].getD_sommet_depart()+", "+getAretes()[i].getD_sommet_arrive()+" ] : ");
+	        System.out.print("Saisir le poids de l'arc [ "+getAretes()[i].getD_sommet_depart().getD_numero()+", "+getAretes()[i].getD_sommet_arrive().getD_numero()+" ] : ");
 	        while(true)
     		{
     			String input = in.nextLine();
@@ -258,6 +258,99 @@ public class GrapheOrienteValue extends GrapheOriente {
         }
 	    
 	}
+	public boolean Dantzig(StringBuilder data) {
+	    //c : matrice des coûts qui sera remplacée par la matrice des distances
+	    //Renvoie false si le graphe contient un circuit absorbant
+	    int n = (int)(d_cout[0][0]);
+	    int [][]c = d_cout;
+	    for(int i=1;i<=d_matrice_d_adjascence[0][0];i++){
+	    	c[i][i] = 0;
+	    }
+	    System.out.println("Matrice d'adjascence : ");
+        for(int i=1;i<=d_matrice_d_adjascence[0][0];i++){
+        	System.out.print("[ ");
+            for(int j=1;j<=d_matrice_d_adjascence[0][0];j++)
+            	System.out.print(c[i][j]+" ");
+            System.out.println("]");
+        }
+	    int k, i ,j;
+	    int x;
+	    for (k = 1; k < n; ++k)
+	    {
+	        for (i = 1; i <= k; ++i)
+	        {
+	            for (j = 1; j <= k; ++j)
+	            {
+	                if((x = c[i][j] + c[j][k+1]) < c[i][k+1])
+	                {
+	                	c[i][k+1] = x;
+	                	System.out.println("c"+i+""+(k+1)+" = "+x);
+	                }
+	                if((x = c[k+1][j] + c[j][i]) < c[k+1][i])
+	                {
+	                	c[k+1][i] = x;
+	                	System.out.println("c"+(k+1)+""+(i)+" = "+x);
+	                }
+	            }//fin for j
+	            if((c[i][k+1] + c[k+1][i]) < 0)
+	            {
+	                System.out.println("Présence d'un circuit absorbant passant par " + i + " et "+ (k+1));
+	                System.out.println("Nouvelle Matrice des couts :");
+	                if(data != null) {
+	                	data.append("Présence d'un circuit absorbant passant par " + i + " et "+ (k+1)+"\n");
+		                data.append("Nouvelle Matrice des couts :\n");
+	                }
+	                for (int l = 1; l <= n ; ++l) {
+	                    for (int p = 1; p <= n ; ++p) {
+	                    	if(c[l][p] == Integer.MAX_VALUE) {
+	                    		System.out.print("∞ ");
+	                    		if(data != null)data.append("∞ ");
+	                    	}
+	                    	else {
+	                    		System.out.print(c[l][p]+" ");
+	                    		if(data != null)data.append(c[l][p]+" ");
+	                    	}
+	                    	
+	                    }
+	                    System.out.println();
+	                    if(data != null)data.append("\n");
+	                }
+	                return true;
+	            }
+	        }//fin for i
+	        for (i = 1; i <= k; ++i) {
+		        for (j = 1; j <= k; ++j) {
+		            if((x = c[i][k+1] + c[k+1][j]) < c[i][j])
+		            {
+		            	c[i][j] = x;
+		            	System.out.println("c"+(i)+""+(j)+" = "+x);
+		            }
+		        }
+	        }
+	    }//fin for k
+	    
+	    System.out.println("Nouvelle Matrice des couts :");
+	    data.append("Nouvelle Matrice des couts :\n");
+	    for (int l = 1; l <= n ; ++l) {
+            for (int p = 1; p <= n ; ++p) {
+            	if(c[l][p] == Integer.MAX_VALUE) {
+            		System.out.print("∞ ");
+            		if(data != null)data.append("∞ ");
+            	}
+            	else {
+            		System.out.print(c[l][p]+" ");
+            		if(data != null)data.append(c[l][p]+" ");
+            	}
+            	
+            }
+            System.out.println();
+            if(data != null)data.append("\n");
+        }
+        System.out.println("Non présence d'un circuit absorbant");
+        if(data != null)data.append("Non présence d'un circuit absorbant\n");
+	    return false;
+	}
+
 	public void DijkstraTexte(int [][]mat_d, int [][]mat_pred, JTextArea textArea)//TESTED
 	{
 	    int n = d_aps[0];
@@ -314,8 +407,9 @@ public class GrapheOrienteValue extends GrapheOriente {
 	        System.out.println( "Quel algorithme souhaitez-vous testé sur ce graphe orienté? " );
 	        System.out.println( "1 - Djikstra : taper 1");
 	        System.out.println( "2 - Ordonnancement : taper 2" );
-	    	System.out.println( "3 - Afficher la matrice d'adjascence, FS et APS et les arêtes du graphe : taper 3" );
-	        System.out.println( "4 - Pour quitter : taper 4" );
+	        System.out.println( "3 - Dantzig : taper 3" );
+	    	System.out.println( "4 - Afficher la matrice d'adjascence, FS et APS et les arêtes du graphe : taper 4" );
+	        System.out.println( "5 - Pour quitter : taper 5" );
 	        while(true)
     		{
     			String input = in.nextLine();
@@ -330,13 +424,13 @@ public class GrapheOrienteValue extends GrapheOriente {
     			}
     		}
 	    }
-	    while (choix < 1 || choix > 4);
+	    while (choix < 1 || choix > 5);
 	    return choix;
 	}
 	public void run()
 	{
 	    int choix = menu();
-	    while (choix != 4)
+	    while (choix != 5)
 	    {
 	        if(choix == 1){
 	            int[][] dist = new int[getD_nb_sommet()+1][getD_nb_sommet()+1], pred = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
@@ -395,6 +489,9 @@ public class GrapheOrienteValue extends GrapheOriente {
 	            System.out.println("]");
 	        }
 	        else if(choix == 3) {
+	        	System.out.println(Dantzig(null));
+	        }
+	        else if(choix == 4) {
 	        	afficheMatrice();
     			afficheFsAps();
     			afficheAretes();
@@ -402,6 +499,11 @@ public class GrapheOrienteValue extends GrapheOriente {
 	        else System.exit(0);
 	        choix = menu();
 	    }
+	}
+	public void dantzigText(JTextArea resultat) {
+		StringBuilder data = new StringBuilder();
+		System.out.println(Dantzig(data));
+		resultat.setText(data.toString());
 	}
 	
 	@Override

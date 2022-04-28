@@ -4,10 +4,8 @@ import java.util.Scanner;
 
 import javax.swing.JTextArea;
 
-import vue.DessinGraphe;
 
 public class GrapheNonOriente extends Graphe {
-	private DessinGraphe dessin;
 	public GrapheNonOriente(boolean oriente) {
 		super(oriente);
 	}

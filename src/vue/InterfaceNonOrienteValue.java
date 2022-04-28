@@ -24,7 +24,7 @@ public class InterfaceNonOrienteValue extends JPanel {
 	private GrapheNonOrienteValue graphe;
 	private JLabel erreur;
 	private JTextArea resultat;
-	private JButton afficherMatrice, afficherFsAps, importerCout, afficherGrapheColoration, afficherGrapheKruskal, afficherArcOuAretes, Rang, Distance, coloration, Kruskal, afficheGraphe, Dantzig, ajoutSommet, supSommet, ajoutArc, supArc;
+	private JButton afficherMatrice, afficherFsAps, importerCout, afficherGrapheColoration, afficherGrapheKruskal, afficherArcOuAretes, Rang, Distance, coloration, Kruskal, afficheGraphe, ajoutSommet, supSommet, ajoutArc, supArc;
 	JComboBox<String> combo;
 	JButton BtSais;
 	public InterfaceNonOrienteValue() {
@@ -102,9 +102,7 @@ public class InterfaceNonOrienteValue extends JPanel {
 		add(Kruskal);
 		
 		
-		Dantzig = new JButton("Dantzig");
-		Dantzig.setBounds(450, 150, 150, 30);
-		add(Dantzig);
+		
         //JScrollPane js = new JScrollPane(resultat, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         //page_oriente_non_value.add(js);
         resultat = new JTextArea(10, 10);
@@ -259,19 +257,7 @@ public class InterfaceNonOrienteValue extends JPanel {
 				}
 			}
 		});
-		Dantzig.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(graphe == null)
-					resultat.setText("Importer d'abord un graphe avant.");
-				else
-				{
-					if(graphe.getD_cout() == null)
-						resultat.setText("Importer d'abord la matrice des coûts.");
-					else
-						graphe.dantzigText(resultat);
-				}
-			}
-		});
+		
 		Kruskal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(graphe == null)
@@ -592,6 +578,7 @@ public class InterfaceNonOrienteValue extends JPanel {
 					frame1.setSize(new Dimension(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height));
 					
 					Arete[] f = graphe.kurskalText(resultat);
+					
 					DessinGrapheKruskal de = new DessinGrapheKruskal(graphe.getD_nb_sommet(), graphe.getAretes(), f);
 					frame1.add(de);
 					de.setSize(getMaximumSize());

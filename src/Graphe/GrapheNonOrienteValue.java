@@ -1,5 +1,6 @@
 package Graphe;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
@@ -11,13 +12,12 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	private int [][]d_cout;
 	public GrapheNonOrienteValue(boolean oriente) {
 		super(oriente);
-		saisir_cout();
-	    matriceToAretes();
+		if(d_matrice_d_adjascence != null)
+			remplirCout();
 	}
 	public GrapheNonOrienteValue(int val) {
 		super(val);
-		if(d_matrice_d_adjascence != null)
-			remplirCout();
+		
 	}
 	public GrapheNonOrienteValue()
 	{
@@ -57,7 +57,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    d_cout[0][0] = n;
 	    for (int i = 0; i < m ; ++i) {
 	        int p;
-	        System.out.print("Saisir le poids de l'arc [ "+getAretes()[i].getD_sommet_depart()+", "+getAretes()[i].getD_sommet_arrive()+" ] : ");
+	        System.out.print("Saisir le poids de l'arc [ "+getAretes()[i].getD_sommet_depart().getD_numero()+", "+getAretes()[i].getD_sommet_arrive().getD_numero()+" ] : ");
 	        while(true)
     		{
     			String input = in.nextLine();
@@ -85,29 +85,65 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    //Initialiser cfc, pilch et prem
 	    
 	    Arete[] aretesN = new Arete[n-1];
+	    int poids = 0;
 	    
 	    
 	    if(data != null)
-	    	data.append(">>>>>Le nouveau graphe obtenu contient les arêtes(extrémité 1, extrémité 2, poids) suivants : \n\n");
+	    	data.append("Le nouveau graphe obtenu contient les arêtes\n(extrémité 1, extrémité 2, poids) suivants : \n\n");
 	    else
 	    	System.out.println(">>>>>Le nouveau graphe obtenu contient les arêtes(extrémité 1, extrémité 2, poids) suivants : \n");
-	    for (int i = 0; i < n-1; ++i)
+	    for (int i = 0; i < d_nb_aretes; ++i)
 	    {
 	        s = getAretes()[i].getD_sommet_depart().getD_numero();
 	        tt = getAretes()[i].getD_sommet_arrive().getD_numero();
 	        if(cfc[s] != cfc[tt])
 	        {
-	        	
 	        	if(data != null)
 	        		data.append("[ "+s+" "+tt+" ]\n");
 	        	else
 	        		System.out.println("[ "+s+" "+tt+" "+aretes[i].d_poids+" ]");
-	        	aretesN[k] = new Arete(new Sommet(s), new Sommet(tt), getAretes()[i].getD_poids());
+	        	aretesN[k] = new Arete(new Sommet(s), new Sommet(tt), aretes[i].d_poids);
+	        	poids += aretes[i].getD_poids();
+	        	aretes[i].setD_color(Color.MAGENTA);
 	        	k++;
 	            fusionner(cfc[s], cfc[tt]);
 	        }
 	    }
+	    if(data != null)
+    		data.append("Le poids de l'arbre recouvrant minimal est "+poids+"\n");
+    	else
+    		System.out.println("Le poids de l'arbre recouvrant minimal est "+poids);
 	    return aretesN;
+	}
+	public void kruskal() 
+	{
+	    trier();
+	    
+	    int k=0, s, tt;
+	    int n = d_matrice_d_adjascence[0][0];
+
+	    //Initialiser cfc, pilch et prem
+	    
+	    Arete[] aretesN = new Arete[n-1];
+	    
+	    
+	    System.out.println(">>>>>Le nouveau graphe obtenu contient les arêtes(extrémité 1, extrémité 2, poids) suivants : \n");
+	    for (int i = 0; i < d_nb_aretes; ++i)
+	    {
+	    	
+	        s = getAretes()[i].getD_sommet_depart().getD_numero();
+	        tt = getAretes()[i].getD_sommet_arrive().getD_numero();
+	        if(cfc[s] != cfc[tt])
+	        {
+	        	
+	        	System.out.println("[ "+s+" "+tt+" "+aretes[i].d_poids+" ]");
+	           
+	            aretesN[k] = new Arete(new Sommet(s), new Sommet(tt), aretes[i].d_poids);
+	            k++;
+	            fusionner(cfc[s], cfc[tt]);
+	            
+	        }
+	    }
 	}
 
 	public void fusionner(int i, int j)
@@ -145,76 +181,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    prem[j] = prem[i];
 	}
 
-	public boolean Dantzig(StringBuilder data) {
-	    //c : matrice des coûts qui sera remplacée par la matrice des distances
-	    //Renvoie false si le graphe contient un circuit absorbant
-	    int n = (int)(d_cout[0][0]);
-	    int [][]c = d_cout;
-	    int k, i ,j;
-	    int x;
-	    for (k = 1; k < n; ++k)
-	    {
-	        for (i = 1; i <= k; ++i)
-	        {
-	            for (j = 1; j <= k; ++j)
-	            {
-	                if((x = c[i][j] + c[j][k+1]) < c[i][k+1])
-	                    c[i][k+1] = x;
-	                if((x = c[k+1][j] + c[j][i]) < c[k+1][i])
-	                    c[k+1][i] = x;
-	            }//fin for j
-	            if((c[i][k+1] + c[k+1][i]) < 0)
-	            {
-	                System.out.println("Présence d'un circuit absorbant passant par " + i + " et "+ (k+1));
-	                System.out.println("Nouvelle Matrice des couts :");
-	                data.append("Présence d'un circuit absorbant passant par " + i + " et "+ (k+1)+"\n");
-	                data.append("Nouvelle Matrice des couts :\n");
-	                for (int l = 1; l <= n ; ++l) {
-	                    for (int p = 1; p <= n ; ++p) {
-	                    	if(c[l][p] == Integer.MAX_VALUE) {
-	                    		System.out.print("∞ ");
-		                    	data.append("∞ ");
-	                    	}
-	                    	else {
-	                    		System.out.print(c[l][p]+" ");
-		                    	data.append(c[l][p]+" ");
-	                    	}
-	                    	
-	                    }
-	                    System.out.println();
-	                    data.append("\n");
-	                }
-	                return false;
-	            }
-	        }//fin for i
-	        for (i = 1; i <= k; ++i)
-		        for (j = 1; j <= k; ++j)
-		            if((x = c[i][k+1] + c[k+1][j]) < c[i][j])
-		                c[i][j] = x;
-	    }//fin for k
-	    
-	    System.out.println("Nouvelle Matrice des couts :");
-	    data.append("Nouvelle Matrice des couts :\n");
-	    for (int l = 1; l <= n ; ++l) {
-            for (int p = 1; p <= n ; ++p) {
-            	if(c[l][p] == Integer.MAX_VALUE) {
-            		System.out.print("∞ ");
-                	data.append("∞ ");
-            	}
-            	else {
-            		System.out.print(c[l][p]+" ");
-                	data.append(c[l][p]+" ");
-            	}
-            	
-            }
-            System.out.println();
-            data.append("\n");
-        }
-        System.out.println("Non présence d'un circuit absorbant");
-        data.append("Non présence d'un circuit absorbant\n");
-	    return true;
-	}
-
+	
 	public int menu()
 	{
 		Scanner in = new Scanner(System.in);
@@ -223,9 +190,8 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	    	System.out.println( "-----------------------------MENU------------------------------------- " );
 	        System.out.println( "Quel algorithme souhaitez-vous testé sur ce graphe orienté? " );
 	        System.out.println( "1 - Kruskal : taper 1");
-	        System.out.println( "2 - Dantzig : taper 2" );
-	    	System.out.println( "3 - Afficher la matrice d'adjascence, FS et APS et les arêtes du graphe : taper 3" );
-	        System.out.println( "4 - Pour quitter : taper 4" );
+	    	System.out.println( "2 - Afficher la matrice d'adjascence, FS et APS et les arêtes du graphe : taper 2" );
+	        System.out.println( "3 - Pour quitter : taper 3" );
 	        while(true)
     		{
     			String input = in.nextLine();
@@ -240,13 +206,13 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
     			}
     		}
 	    }
-	    while (choix < 1 || choix > 4);
+	    while (choix < 1 || choix > 3);
 	    return choix;
 	}
 	public void run()
 	{
 	    int choix = menu();
-	    while (choix != 4)
+	    while (choix != 3)
 	    {
 	    	switch(choix)
 	    	{
@@ -259,7 +225,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 		    	        prem[i] = i;
 		    	        pilch[i] = 0;
 		    	    }
-		            kruskal(null);
+		            kruskal();
 		            //System.out.println(">>Les caractéristiques du graphe recevrant minimal obtenu");
 		            
 		            System.out.print("PREM : [ ");
@@ -276,8 +242,6 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 		            System.out.println("]");
 		            break;
 	    		case 2:
-	    			System.out.println(Dantzig(null));
-	    		case 3:
 	    			afficheMatrice();
 	    			afficheFsAps();
 	    			afficheAretes();
@@ -332,11 +296,7 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 		textArea.setText(data.toString());
 		return areteN;
 	}
-	public void dantzigText(JTextArea resultat) {
-		StringBuilder data = new StringBuilder();
-		System.out.println(Dantzig(data));
-		resultat.setText(data.toString());
-	}
+	
 	public void ajoutNouvelArete(int sommet1, int sommet2, int poids) {
 		d_matrice_d_adjascence[0][1] = d_matrice_d_adjascence[0][1] + 2;
 		d_matrice_d_adjascence[sommet1][sommet2] = 1;

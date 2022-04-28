@@ -32,11 +32,11 @@ public class DessinGrapheColoration extends JComponent {
 	protected void paintComponent(Graphics g) {
 		Graphics2D gr = (Graphics2D)g;
 		Random r = new Random();
-		char[][] num = new char[nb_points+1][1];
+		String[] num = new String[nb_points+1];
 		
 		Sommet xy[] = new Sommet[nb_points+1];
 		for(int i=1; i<=nb_points; i++) {
-			num[i][0] = String.valueOf(i).charAt(0);
+			num[i] = String.valueOf(i);
 			int x = r.nextInt(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width - 70);
 			int y = r.nextInt(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height - 70);
 	        int j = 1;
@@ -72,10 +72,10 @@ public class DessinGrapheColoration extends JComponent {
 		gr.setColor(Color.BLACK);
 		for(int i=0; i<aretes.length; i++) {
 			gr.setColor(Color.RED);
-			gr.drawChars(num[aretes[i].getD_sommet_depart().getD_numero()], 0, 1, xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y());
-			gr.drawChars(num[aretes[i].getD_sommet_arrive().getD_numero()], 0, 1, xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y());
+			gr.drawString(num[aretes[i].getD_sommet_depart().getD_numero()], xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y());
+			gr.drawString(num[aretes[i].getD_sommet_arrive().getD_numero()], xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y());
 			//gr.drawLine(xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x()+5, xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y()+5, xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x()+5, xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y()+5);
-			aretes[i].draw(gr, Color.RED);
+			aretes[i].draw(gr, Color.BLACK, false);
 		}	
 		
 	}

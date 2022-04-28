@@ -5,10 +5,9 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.Window.Type;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,7 +24,7 @@ public class InterfaceOrienteValue extends JPanel {
 	private GrapheOrienteValue graphe;
 	private JLabel erreur;
 	private JTextArea resultat;
-	private JButton afficherMatrice, afficherFsAps, afficheGraphe, importerCout, afficherArcOuAretes, Rang, Tarjan, Distance, Djikstra, ordonnancement, ajoutSommet, supSommet, ajoutArc, supArc;
+	private JButton afficherMatrice, afficherFsAps, Dantzig, afficheGraphe, importerCout, afficherArcOuAretes, Rang, Tarjan, Distance, Djikstra, ordonnancement, ajoutSommet, supSommet, ajoutArc, supArc;
 	JComboBox<String> combo;
 	JButton BtSais;
 
@@ -99,6 +98,9 @@ public class InterfaceOrienteValue extends JPanel {
         importerCout.setBounds(150, 45, 300, 30);
         
         add(importerCout);
+        Dantzig = new JButton("Dantzig");
+		Dantzig.setBounds(150, 620, 150, 30);
+		add(Dantzig);
 		
 		
 		Djikstra = new JButton("Djikstra");
@@ -128,17 +130,14 @@ public class InterfaceOrienteValue extends JPanel {
 
 	public InterfaceOrienteValue(LayoutManager layout) {
 		super(layout);
-		// TODO Auto-generated constructor stub
 	}
 
 	public InterfaceOrienteValue(boolean isDoubleBuffered) {
 		super(isDoubleBuffered);
-		// TODO Auto-generated constructor stub
 	}
 
 	public InterfaceOrienteValue(LayoutManager layout, boolean isDoubleBuffered) {
 		super(layout, isDoubleBuffered);
-		// TODO Auto-generated constructor stub
 	}
 	public void event() {
 		combo.addActionListener(new ActionListener() {
@@ -592,6 +591,19 @@ public class InterfaceOrienteValue extends JPanel {
 					de.setSize(getMaximumSize());
 					
 					frame1.setVisible(true);
+				}
+			}
+		});
+		Dantzig.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(graphe == null)
+					resultat.setText("Importer d'abord un graphe avant.");
+				else
+				{
+					if(graphe.getD_cout() == null)
+						resultat.setText("Importer d'abord la matrice des coûts.");
+					else
+						graphe.dantzigText(resultat);
 				}
 			}
 		});

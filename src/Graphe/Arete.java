@@ -7,6 +7,7 @@ import java.util.Objects;
 public class Arete {
 		protected Sommet d_sommet_depart, d_sommet_arrive;
 		protected int d_poids;
+		protected Color d_color = Color.black;
 
 	public Arete(Sommet sommet_depart, Sommet sommet_arrive, int poids) {
 		this.d_poids = poids;
@@ -35,13 +36,26 @@ public class Arete {
 	public int getD_poids() {
 		return d_poids;
 	}
-
+	
+	public Color getD_color() {
+		return d_color;
+	}
+	public void setD_color(Color d_color) {
+		this.d_color = d_color;
+	}
 	public void setD_poids(int d_poids) {
 		this.d_poids = d_poids;
 	}
-	public void draw(Graphics2D gr, Color couleur) {
+	public void draw(Graphics2D gr) {
+		gr.setColor(d_color);
+		gr.drawLine(getD_sommet_depart().getD_x()+5, getD_sommet_depart().getD_y()+5, getD_sommet_arrive().getD_x()+5, getD_sommet_arrive().getD_y()+5);
+		gr.drawString(d_poids+"", (getD_sommet_depart().getD_x()+getD_sommet_arrive().getD_x())/2, (getD_sommet_depart().getD_y()+getD_sommet_arrive().getD_y())/2);
+	}
+	public void draw(Graphics2D gr, Color couleur, boolean value) {
 		gr.setColor(couleur);
 		gr.drawLine(getD_sommet_depart().getD_x()+5, getD_sommet_depart().getD_y()+5, getD_sommet_arrive().getD_x()+5, getD_sommet_arrive().getD_y()+5);
+		if(value)
+			gr.drawString(d_poids+"", (getD_sommet_depart().getD_x()+getD_sommet_arrive().getD_x())/2, (getD_sommet_depart().getD_y()+getD_sommet_arrive().getD_y())/2);
 	}
 	@Override
 	public int hashCode() {

@@ -223,7 +223,8 @@ public class Graphe {
 	        case 6:
 	        	System.out.print("Veuillez saisir le nom du fichier sans l'extension : ");
 	        	fichier = in.nextLine();
-	        	chargerAretesFromFichier("/Users/simpleprosper/eclipse-workspace/ProjetGrapheAlgo/"+fichier+".txt"); break;
+	        	if(oriente) chargerArcsFromFichier("/Users/simpleprosper/eclipse-workspace/ProjetGrapheAlgo/"+fichier+".txt");
+	        	else chargerAretesFromFichier("/Users/simpleprosper/eclipse-workspace/ProjetGrapheAlgo/"+fichier+".txt"); break;
 	        default: System.exit(0);
 	    }
     }
@@ -813,7 +814,7 @@ public class Graphe {
     {
     	System.out.println("Aretes/Arcs : ");
     	for(int i=0; i<getD_nb_aretes(); ++i)
-    		System.out.println("[ " + getAretes()[i].getD_sommet_depart().getD_numero() + " " + getAretes()[i].getD_sommet_arrive().getD_numero() + " ]");
+    		System.out.println("[ " + getAretes()[i].getD_sommet_depart().getD_numero() + " " + getAretes()[i].getD_sommet_arrive().getD_numero() + " " +getAretes()[i].getD_poids() + " ]");
     }
     public void distance(int r, int[] dist)//TESTED
     {
@@ -1148,7 +1149,7 @@ public class Graphe {
 			setD_nb_sommet(Integer.parseInt(line));
 			line = in.readLine();
 			setD_nb_aretes(Integer.parseInt(line));
-			setAretes(new Arete[getD_nb_aretes()]);
+			aretes = new Arete[Integer.parseInt(line)];
 			d_matrice_d_adjascence = new int[getD_nb_sommet()+1][getD_nb_sommet()+1];
 			d_matrice_d_adjascence[0][0] = getD_nb_sommet();
 			d_matrice_d_adjascence[0][1] = 2*getD_nb_aretes();
@@ -1163,7 +1164,8 @@ public class Graphe {
 				int s = Integer.parseInt(tab[0]);
 				int t = Integer.parseInt(tab[1]);
 				int p = Integer.parseInt(tab[2]);
-				getAretes()[k] = new Arete(new Sommet(s), new Sommet(t), p);
+				//System.out.println(p);
+				aretes[k] = new Arete(new Sommet(s), new Sommet(t), p);
 				d_matrice_d_adjascence[s][t] = 1;
 				d_matrice_d_adjascence[t][s] = 1;
 				k++;
@@ -1171,6 +1173,7 @@ public class Graphe {
 			}
 			in.close();	
 			file1.close();
+			//afficheAretes();
 			//afficheMatrice()
         	matriceToFsAps();
 		}
