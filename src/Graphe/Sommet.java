@@ -67,7 +67,7 @@ public class Sommet {
 	}
 	public void draw(Graphics2D gr, Color couleur) {
 		gr.setColor(couleur);
-		gr.drawString(d_numero+"", getD_x(), getD_y());
+		//gr.drawString(d_numero+"", getD_x(), getD_y());
 		gr.fillOval(getD_x(), getD_y(), 30, 30);
 	}
 	

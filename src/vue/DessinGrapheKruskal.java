@@ -34,7 +34,7 @@ public class DessinGrapheKruskal extends JComponent {
 		Graphics2D gr = (Graphics2D)g;
 		Random r = new Random();
 		String[] num = new String[nb_points+1];
-		//String[] nom = {"", "Bourse", "Opera", "Etoile", "République", "St-Lazare", "Louvre", "Neuilly"};
+		String[] nom = {"", "Bourse", "Opera", "Etoile", "République", "St-Lazare", "Louvre", "Neuilly"};
 		
 		Sommet xy[] = new Sommet[nb_points+1];
 		for(int i=1; i<=nb_points; i++) {
@@ -60,8 +60,8 @@ public class DessinGrapheKruskal extends JComponent {
 		
 		for(int i=0; i<aretes.length; i++) {
 			gr.setColor(Color.RED);
-			//gr.drawString(nom[aretes[i].getD_sommet_depart().getD_numero()], xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y());
-			//gr.drawString(nom[aretes[i].getD_sommet_arrive().getD_numero()], xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y());
+			gr.drawString(nom[aretes[i].getD_sommet_depart().getD_numero()], xy[aretes[i].getD_sommet_depart().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_depart().getD_numero()].getD_y());
+			gr.drawString(nom[aretes[i].getD_sommet_arrive().getD_numero()], xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_x(), xy[aretes[i].getD_sommet_arrive().getD_numero()].getD_y());
 			
 			aretes[i].draw(gr);
 			

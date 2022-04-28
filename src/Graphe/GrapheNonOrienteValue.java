@@ -17,7 +17,8 @@ public class GrapheNonOrienteValue extends GrapheNonOriente {
 	}
 	public GrapheNonOrienteValue(int val) {
 		super(val);
-		
+		if(d_matrice_d_adjascence != null)
+			remplirCout();
 	}
 	public GrapheNonOrienteValue()
 	{
