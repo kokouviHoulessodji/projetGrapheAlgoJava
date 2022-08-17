@@ -33,7 +33,7 @@ import javax.swing.border.MatteBorder;
 
 
 
-public class Fenetre extends JFrame implements Runnable {
+public class Fenetre extends JFrame {
 	/**
 	 * 
 	 */
@@ -51,11 +51,6 @@ public class Fenetre extends JFrame implements Runnable {
 	private JLabel accueil, oriente_non_value, oriente_value;
 	private JLabel non_oriente_non_value, non_oriente_value, arbre;
 	
-
-	@Override
-	public void run() {
-
-	}
 	public Fenetre() {
 		
 		pile = new CardLayout();

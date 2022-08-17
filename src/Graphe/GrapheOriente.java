@@ -58,37 +58,41 @@ public class GrapheOriente extends Graphe{
 	    delete[] deja_mis;
 	}
 	*/
-	public void traverse(int s, int p) {
+	public void traverse(int s, int p, int nc) {
 	    int t;
-	    System.out.println(p);
-	    p = p + 1;
+	    p++;
+	    //System.out.println(p);
 	    num[s] = p;
 	    ro[s] = p; // numérote s et initialise ro[s]
 	    empiler(s, tarj);
 	    entarj[s] = true;
 	    for (int k = d_aps[s]; (t = d_fs[k]) != 0; k++) {
-	        if (num[t] == 0) // si t n'est pas encore numéroté { pred[t] = s;
-	            traverse(t, p);
-	        if (ro[t] < ro[s])
+	        if (num[t] == 0) // si t n'est pas encore numéroté 
+	        { 
+	        	pred[t] = s;
+	            traverse(t, p, nc);
+	            p++;
+	            if (ro[t] < ro[s])
 	            ro[s] = ro[t];
+	        }
 	        else {
 	            if ((num[t] < ro[s]) && entarj[t])
 	                ro[s] = num[t];
 	        }
 	    }
-	    int k = 0;
 	    if (ro[s] == num[s]) {
-	       k++;
+	       nc++;
 	       int u;
 	       do {
 	    	   u = depiler(tarj);
 	           entarj[u] = false;
 	           empiler(u, pilch);
-	           cfc[u] = k;
+	           cfc[u] = nc;
 	       } while (u != s);
-	       prem[k] = pilch[0];
+	       prem[nc] = pilch[0];
 	       pilch[0] = 0;
 	    }
+	    
 	}
 
 
@@ -176,19 +180,19 @@ public class GrapheOriente extends Graphe{
 	    entarj = new boolean[n + 1];
 	    num = new int[n + 1];
 	    ro = new int[n + 1];
-	    int k = 0;
 	    for (int i = 1; i <= n; i++) {
 	        num[i] = 0;
 	        pred[i] = 0;
 	        ro[i] = 0;
 	        entarj[i] = false;
 	    }
+	    int p = 0, nc = 0;
 	    pilch[0] = 0;
-	    tarj[0] = 0;
 	    for (int s = 1; s <= d_aps[0]; s++)
 	        if (num[s] == 0)
-	            traverse(s, k);
-	    prem[0] = k;
+	            traverse(s, p, nc);
+	    prem[0] = nc;
+	    cfc[0] = p;
 	    
 	}
 
@@ -236,7 +240,8 @@ public class GrapheOriente extends Graphe{
 	    	    entarj = new boolean[n + 1];
 	    	    num = new int[n + 1];
 	    	    ro = new int[n + 1];
-	            traverse(s, p);
+	    	    int nc = 0;
+	            traverse(s, p, nc);
 	            System.out.print(">>NUM : [ ");
 	            for(int i=1; i<=n; i++)
 	            	System.out.print(num[i]+" ");
@@ -364,43 +369,43 @@ public class GrapheOriente extends Graphe{
         	data.append(pred[i]+" ");
         data.append("]\n");
         data.append(">>>>>>NUM : [ ");
-        for(int i=0;i<n;i++)
+        for(int i=1;i<=n;i++)
 		  {
 			  data.append(num[i]+" ");
 		  }
         data.append("]\n");
         data.append(">>>>>>RO : [ ");
-        for(int i=0;i<n;i++)
+        for(int i=1;i<=n;i++)
 		  {
 			  data.append(ro[i]+" ");
 		  }
         data.append("]\n");
         data.append(">>>>>>PREM : [ ");
-        for(int i=0;i<n;i++)
+        for(int i=1;i<=n;i++)
 		  {
 			  data.append(prem[i]+" ");
 		  }
         data.append("]\n");
         data.append(">>>>>>PILCH : [ ");
-        for(int i=0;i<n;i++)
+        for(int i=1;i<=n;i++)
 		  {
 			  data.append(pilch[i]+" ");
 		  }
         data.append("]\n");
         data.append(">>>>>>CFC : [ ");
-        for(int i=0;i<n;i++)
+        for(int i=1;i<=n;i++)
 		  {
 			  data.append(cfc[i]+" ");
 		  }
         data.append("]\n");
         data.append(">>>>>>TARJ : [ ");
-        for(int i=0;i<n;i++)
+        for(int i=1;i<=n;i++)
 		  {
 			  data.append(tarj[i]+" ");
 		  }
         data.append("]\n");
         data.append(">>>>>>ENTARJ : [ ");
-        for(int i=0;i<n;i++)
+        for(int i=1;i<=n;i++)
 		  {
 			  data.append(entarj[i]+" ");
 		  }

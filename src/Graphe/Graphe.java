@@ -1179,7 +1179,7 @@ public class Graphe {
 		}
 		catch(Exception e)
 		{
-			 System.out.println ("Fichier introuvable."+e.getMessage());
+			 System.out.println ("Fichier introuvable."+e.getLocalizedMessage());
 		}
     }
     public void chargerArcsFromFichier(String nomFichier) {
